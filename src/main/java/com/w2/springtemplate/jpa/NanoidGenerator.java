@@ -107,8 +107,8 @@ public class NanoidGenerator implements IdentifierGenerator {
         /// Math.log(2))) - 1;
 
         final int mask = (2 << log2(alphabet.length - 1, RoundingMode.FLOOR)) - 1;
-
-        final int step = (int) Math.ceil(1.6 * mask * size / alphabet.length);
+        final int step = (mask * size * 16) / (10 * alphabet.length);
+//        final int step = (int) Math.ceil(1.6 * mask * size / alphabet.length);
 
         final StringBuilder idBuilder = new StringBuilder(size);
         final byte[] bytes = new byte[step];
