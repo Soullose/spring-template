@@ -1,21 +1,46 @@
 package com.w2.springtemplate.controller;
 
+import com.querydsl.core.types.Predicate;
+import com.w2.springtemplate.model.QSysUser;
+import com.w2.springtemplate.model.SysUser;
+import com.w2.springtemplate.repository.SysUserRepository;
+import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
 
+	private final PasswordEncoder passwordEncoder;
+	private final SysUserRepository sysUserRepository;
 
-    @PostMapping("/register")
-    public ResponseEntity userRegister() {
-        return ResponseEntity.ok().build();
-    }
+	public UserController(PasswordEncoder passwordEncoder, SysUserRepository sysUserRepository) {
+		this.passwordEncoder = passwordEncoder;
+		this.sysUserRepository = sysUserRepository;
+	}
 
+	@PostMapping("/register")
+	public ResponseEntity<SysUser> userRegister() {
+		SysUser sysUser = new SysUser();
+		sysUser.setName("王小明");
+		sysUser.setUsername("wxm");
+		sysUser.setPassword(passwordEncoder.encode("123456"));
+		sysUserRepository.save(sysUser);
+		return ResponseEntity.ok(sysUser);
+	}
+
+	@GetMapping("/check")
+	public ResponseEntity<SysUser> check(@RequestParam String username, @RequestParam String password) {
+		QSysUser qSysUser = QSysUser.sysUser;
+		Predicate predicate = qSysUser.username.eq(username);
+		SysUser sysUser = sysUserRepository.findOne(predicate).orElse(null);
+		String password1 = sysUser.getPassword();
+		boolean matches = passwordEncoder.matches(password, password1);
+		log.info("密码是否正确:{}", matches);
+		return ResponseEntity.ok(sysUser);
+	}
 
 }
