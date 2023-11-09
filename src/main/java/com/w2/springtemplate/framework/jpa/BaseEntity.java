@@ -1,4 +1,4 @@
-package com.w2.springtemplate.jpa;
+package com.w2.springtemplate.framework.jpa;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,7 +15,7 @@ import java.time.Instant;
 public class BaseEntity {
 
     @Id
-    @GenericGenerator(name = "NanoidGenerator", strategy = "com.w2.springtemplate.jpa.NanoidGenerator")
+    @GenericGenerator(name = "NanoidGenerator", strategy = "com.w2.springtemplate.framework.jpa.NanoidGenerator")
     @GeneratedValue(generator = "NanoidGenerator")
     @Column(name = "id_")
     @Access(AccessType.PROPERTY)

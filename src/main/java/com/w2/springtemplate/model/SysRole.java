@@ -1,6 +1,6 @@
 package com.w2.springtemplate.model;
 
-import com.w2.springtemplate.jpa.BaseEntity;
+import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 

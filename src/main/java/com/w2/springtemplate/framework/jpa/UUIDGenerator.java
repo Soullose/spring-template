@@ -1,4 +1,4 @@
-package com.w2.springtemplate.jpa;
+package com.w2.springtemplate.framework.jpa;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

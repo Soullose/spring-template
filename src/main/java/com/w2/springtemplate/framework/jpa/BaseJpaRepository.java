@@ -1,4 +1,4 @@
-package com.w2.springtemplate.jpa;
+package com.w2.springtemplate.framework.jpa;
 
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
