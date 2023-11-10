@@ -11,7 +11,10 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.w2.springtemplate.framework.oos.client.OOSClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +32,13 @@ import java.util.List;
 @RequestMapping("/test")
 @Slf4j
 public class TestController {
+
+//	@Autowired
+//	private AmazonS3 sfS3Client;
+
+	@Autowired
+	@Qualifier(value = "sfOOSClient")
+	private OOSClient oosClient;
 
 	private static final String accessKey = "JZYMLZEWNAHACV6L6ILL"; // 使用EDS web界面创建的对象存储用户，此处填用户的access key
 	private static final String secretKey = "QJUeJXTIw8EdBp2UirBqP4E46VsFmcF2n6UimaZB"; // 使用EDS
@@ -173,12 +183,12 @@ public class TestController {
 	}
 
 	@GetMapping("/queryAllObjects")
-	public ResponseEntity queryAllObjects() {
+	public ResponseEntity queryAllObjects(@RequestParam String bucketName) {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		ClientConfiguration clientConfig = new ClientConfiguration();
 		clientConfig.setProtocol(Protocol.HTTP);
 
-		String bucketName = "md-13090440321";
+//		String bucketName = "md-13090440321";
 		try {
 			AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
 					.withCredentials(new AWSStaticCredentialsProvider(credentials))
@@ -313,6 +323,18 @@ public class TestController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(grants);
+	}
+
+
+	@GetMapping("/queryAllObjectsByConfig")
+	public ResponseEntity queryAllObjectsByConfig() {
+		String bucketName = "md-13090440321";
+		return ResponseEntity.ok(oosClient.queryAllObjects(bucketName));
+	}
+
+	@GetMapping("/getObjectURL")
+	public ResponseEntity<String> getObjectURL(@RequestParam String key) {
+		return ResponseEntity.ok(oosClient.getObjectUrl(key));
 	}
 
 }
