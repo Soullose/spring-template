@@ -14,9 +14,11 @@ import java.io.Serializable;
 @Table(name = "t_sys_user")
 @Entity
 public class SysUser extends BaseEntity implements Serializable {
-    /// 登录账户,唯一.
-    @Column(unique = true)
-    private String username;
-    private String password;
-    private String name;
+	/// 登录账户,唯一.
+	@Column(name = "user_name_", unique = true)
+	private String username;
+	@Column(name = "password_")
+	private String password;
+	@Column(name = "name_")
+	private String name;
 }

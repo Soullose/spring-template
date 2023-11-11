@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ShiroConfiguration {
+
 	/// 密码加密设置
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -18,4 +19,7 @@ public class ShiroConfiguration {
 	// return new UserAccountRealm();
 	// }
 
+//	HashedCredentialsMatcher
+
+//	DefaultPasswordService
 }

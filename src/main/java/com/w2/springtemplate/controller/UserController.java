@@ -23,11 +23,13 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<SysUser> userRegister() {
+	public ResponseEntity<SysUser> userRegister(@RequestParam String username) {
 		SysUser sysUser = new SysUser();
 		sysUser.setName("王小明");
-		sysUser.setUsername("wxm");
+		sysUser.setUsername(username);
 		sysUser.setPassword(passwordEncoder.encode("123456"));
+//		sysUser.setPassword(OpenBSDBCrypt.generate("123456".toCharArray(),new byte[16],4));
+
 		sysUserRepository.save(sysUser);
 		return ResponseEntity.ok(sysUser);
 	}
@@ -39,6 +41,7 @@ public class UserController {
 		SysUser sysUser = sysUserRepository.findOne(predicate).orElse(null);
 		String password1 = sysUser.getPassword();
 		boolean matches = passwordEncoder.matches(password, password1);
+//		log.info("校验密码是否正确:{}",OpenBSDBCrypt.checkPassword(password1,password.toCharArray()));
 		log.info("密码是否正确:{}", matches);
 		return ResponseEntity.ok(sysUser);
 	}

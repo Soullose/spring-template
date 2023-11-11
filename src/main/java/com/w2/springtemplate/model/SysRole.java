@@ -4,6 +4,7 @@ import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -14,6 +15,8 @@ import java.io.Serializable;
 @Entity
 public class SysRole extends BaseEntity implements Serializable {
 
-    private String roleCode;
-    private String roleName;
+	@Column(name = "role_code_")
+	private String roleCode;
+	@Column(name = "role_name_")
+	private String roleName;
 }
