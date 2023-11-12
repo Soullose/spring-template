@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordMatcher;
 import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordService;
 import com.w2.springtemplate.framework.shiro.realm.UserAccountRealm;
-import com.w2.springtemplate.utils.crypto.BCryptPasswordEncoder;
-import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.realm.Realm;

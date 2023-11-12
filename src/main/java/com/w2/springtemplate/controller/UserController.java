@@ -4,7 +4,6 @@ import com.querydsl.core.types.Predicate;
 import com.w2.springtemplate.model.QSysUser;
 import com.w2.springtemplate.model.SysUser;
 import com.w2.springtemplate.repository.SysUserRepository;
-import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 
-	private final PasswordEncoder passwordEncoder;
 	private final SysUserRepository sysUserRepository;
 
-	public UserController(PasswordEncoder passwordEncoder, SysUserRepository sysUserRepository) {
-		this.passwordEncoder = passwordEncoder;
+	public UserController( SysUserRepository sysUserRepository) {
 		this.sysUserRepository = sysUserRepository;
 	}
 
@@ -27,7 +24,6 @@ public class UserController {
 		SysUser sysUser = new SysUser();
 		sysUser.setName("王小明");
 		sysUser.setUsername(username);
-		sysUser.setPassword(passwordEncoder.encode("123456"));
 //		sysUser.setPassword(OpenBSDBCrypt.generate("123456".toCharArray(),new byte[16],4));
 
 		sysUserRepository.save(sysUser);
@@ -40,9 +36,7 @@ public class UserController {
 		Predicate predicate = qSysUser.username.eq(username);
 		SysUser sysUser = sysUserRepository.findOne(predicate).orElse(null);
 		String password1 = sysUser.getPassword();
-		boolean matches = passwordEncoder.matches(password, password1);
 //		log.info("校验密码是否正确:{}",OpenBSDBCrypt.checkPassword(password1,password.toCharArray()));
-		log.info("密码是否正确:{}", matches);
 		return ResponseEntity.ok(sysUser);
 	}
 
