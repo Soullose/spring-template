@@ -1,6 +1,7 @@
 package com.w2.springtemplate.framework.shiro.realm;
 
 import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordMatcher;
+import com.w2.springtemplate.framework.shiro.cache.RedisCache;
 import com.w2.springtemplate.model.SysUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
@@ -9,6 +10,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.cache.Cache;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
@@ -34,4 +36,15 @@ public class UserAccountRealm extends AuthorizingRealm {
 
         return new SimpleAuthenticationInfo(sysUser, sysUser.getPassword(), getName());
     }
+
+
+//    @Override
+//    public void setAuthenticationCachingEnabled(boolean authenticationCachingEnabled) {
+//        super.setAuthenticationCachingEnabled(true);
+//    }
+
+//    @Override
+//    public void setAuthenticationCache(Cache<Object, AuthenticationInfo> authenticationCache) {
+//        super.setAuthenticationCache(new RedisCache<>());
+//    }
 }
