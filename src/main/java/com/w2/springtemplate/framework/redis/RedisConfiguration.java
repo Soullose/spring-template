@@ -16,6 +16,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
 @Configuration
@@ -36,7 +37,6 @@ public class RedisConfiguration {
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
         redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
         redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -51,9 +51,9 @@ public class RedisConfiguration {
         jackson2JsonRedisSerializer.setObjectMapper(om);
         RedisTemplate<K, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashKeySerializer(StringRedisSerializer.UTF_8);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
