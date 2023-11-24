@@ -41,9 +41,9 @@ spring:
         max-active: 8
         max-idle: 8
         max-wait: -1ms
-#  mvc:
-#    pathmatch:
-#      matching-strategy: ant_path_matcher
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 
 server:
