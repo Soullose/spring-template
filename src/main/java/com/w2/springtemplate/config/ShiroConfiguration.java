@@ -14,6 +14,7 @@ import com.w2.springtemplate.framework.shiro.session.NoSessionWebSubjectFactory;
 import com.w2.springtemplate.utils.crypto.BCryptPasswordEncoder;
 import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -32,10 +33,13 @@ import org.apache.shiro.web.config.ShiroFilterConfiguration;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 
@@ -93,6 +97,17 @@ public class ShiroConfiguration {
         return defaultSubjectDAO;
     }
 
+    @Bean
+    public FilterRegistrationBean<Filter> shiroFilterRegistrationBean() {
+        FilterRegistrationBean<Filter> filterRegistration = new FilterRegistrationBean<Filter>();
+        filterRegistration.setFilter(new DelegatingFilterProxy("shiroFilterFactoryBean"));
+        filterRegistration.setEnabled(true);
+        filterRegistration.addUrlPatterns("/*");
+        filterRegistration.setDispatcherTypes(DispatcherType.REQUEST);
+
+        return filterRegistration;
+    }
+
     /// 自定义过滤器
     @Bean
     LinkedHashMap<String, Filter> filters() {
@@ -106,7 +121,7 @@ public class ShiroConfiguration {
     @Bean
     LinkedHashMap<String, String> filterChainDefinitionMap() {
         LinkedHashMap<String, String> filterChainDefinitionMap = Maps.newLinkedHashMap();
-        filterChainDefinitionMap.put("/api/login", "authc");
+        filterChainDefinitionMap.put("/api/w2/login", "authc");
         filterChainDefinitionMap.put("/api/doc.html", "anon");
         filterChainDefinitionMap.put("/api/**", "jwt");
 //        filterChainDefinitionMap.put("/**", "authc");
@@ -131,21 +146,21 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    ModularRealmAuthenticator multipleRealmAuthentic(Realm userAccountRealm, Realm bearerRealm) {
+    Authenticator multipleRealmAuthentic(Realm userAccountRealm, Realm bearerRealm) {
         MultipleRealmAuthentic multipleRealmAuthentic = new MultipleRealmAuthentic();
-        multipleRealmAuthentic.setRealms(Lists.newArrayList(userAccountRealm,bearerRealm));
+        multipleRealmAuthentic.setRealms(Lists.newArrayList(userAccountRealm, bearerRealm));
         return multipleRealmAuthentic;
     }
 
 
     @Bean
-    public DefaultWebSecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm) {
+    public DefaultWebSecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm, Authenticator multipleRealmAuthentic) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setCacheManager(redisCacheManager());
         // manager.setSessionManager(sessionManager());
         // manager.setSubjectDAO(defaultSubjectDAO());
         manager.setSubjectFactory(new NoSessionWebSubjectFactory()); // 使用无状态的工厂
-        manager.setAuthenticator(multipleRealmAuthentic(userAccountRealm,bearerRealm));
+        manager.setAuthenticator(multipleRealmAuthentic);
         // 默认SubjectDAO会写入会话，无状态时需要通过以下代码阻止写入
         DefaultSubjectDAO subjectDAO = (DefaultSubjectDAO) manager.getSubjectDAO();
         DefaultSessionStorageEvaluator sessionStorageEvaluator = (DefaultSessionStorageEvaluator) subjectDAO
