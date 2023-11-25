@@ -1,50 +1,40 @@
 package com.w2.springtemplate.framework.shiro.realm;
 
-import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordMatcher;
-import com.w2.springtemplate.framework.shiro.cache.RedisCache;
-import com.w2.springtemplate.model.SysUser;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.cache.Cache;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+
+import com.w2.springtemplate.model.SysUser;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class UserAccountRealm extends AuthorizingRealm {
 
-    /**
-     * 授权
-     */
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        return null;
-    }
+	/**
+	 * 授权
+	 */
+	@Override
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+		return null;
+	}
 
-    /**
-     * 登录认证
-     */
-    @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        SysUser sysUser = new SysUser();
-        sysUser.setUsername("wsf");
-        sysUser.setPassword("$2a$10$Pk5usESTB2rQ0sdAUG1U1ePGGAaon.CpwZd5clxowMJLEAyu3kJGO");
+	/**
+	 * 登录认证
+	 */
+	@Override
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken)
+			throws AuthenticationException {
+		log.info("UserAccountRealm.doGetAuthenticationInfo()");
+		UsernamePasswordToken upToken = (UsernamePasswordToken) authenticationToken;
+		String username = upToken.getUsername();
+		log.info("username:{}", username);
+		SysUser sysUser = new SysUser();
+		sysUser.setUsername("wsf");
+		sysUser.setPassword("$2a$10$Pk5usESTB2rQ0sdAUG1U1ePGGAaon.CpwZd5clxowMJLEAyu3kJGO");
 
-        return new SimpleAuthenticationInfo(sysUser, sysUser.getPassword(), getName());
-    }
+		return new SimpleAuthenticationInfo(sysUser, sysUser.getPassword(), getName());
+	}
 
-
-//    @Override
-//    public void setAuthenticationCachingEnabled(boolean authenticationCachingEnabled) {
-//        super.setAuthenticationCachingEnabled(true);
-//    }
-
-//    @Override
-//    public void setAuthenticationCache(Cache<Object, AuthenticationInfo> authenticationCache) {
-//        super.setAuthenticationCache(new RedisCache<>());
-//    }
 }
