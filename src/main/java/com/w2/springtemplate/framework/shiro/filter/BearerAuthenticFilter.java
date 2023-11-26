@@ -1,9 +1,11 @@
-package com.w2.springtemplate.framework.shiro.jwt;
+package com.w2.springtemplate.framework.shiro.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.BearerToken;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BearerHttpAuthenticationFilter;
 
@@ -29,7 +31,7 @@ public class BearerAuthenticFilter extends BearerHttpAuthenticationFilter {
 		}
 		if (!loggedIn) {
 			sendChallenge(request, response);
-			log.error("request header 未带Authorization 参数");
+			log.error("Authentication required: sending 401 Authentication challenge response.");
 		}
 		return loggedIn;
 	}
@@ -51,6 +53,11 @@ public class BearerAuthenticFilter extends BearerHttpAuthenticationFilter {
 			return onLoginSuccess(bearerToken, subject, request, response);
 		} catch (AuthenticationException e) {
 			e.printStackTrace();
+			Throwable cause = e.getCause();
+			if (ObjectUtils.isNotEmpty(cause) && cause instanceof ExpiredCredentialsException){
+				ExpiredCredentialsException ex = (ExpiredCredentialsException) cause;
+				log.error(ex.getMessage());
+			}
 			return onLoginFailure(bearerToken, e, request, response);
 		}
 	}

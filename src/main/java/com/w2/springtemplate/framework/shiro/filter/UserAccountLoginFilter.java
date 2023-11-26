@@ -90,6 +90,7 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
 		log.debug("User login success");
 
 		HttpServletResponse httpResponse = WebUtils.toHttp(response);
+		log.info("-----:{}",subject.getPrincipal());
 		@SuppressWarnings("unchecked")
 		Map<String, Object> claims = objectMapper.convertValue(subject.getPrincipal(), Map.class);
 

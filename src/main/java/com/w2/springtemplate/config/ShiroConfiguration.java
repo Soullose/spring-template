@@ -6,7 +6,7 @@ import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordMatcher;
 import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordService;
 import com.w2.springtemplate.framework.shiro.cache.RedisCacheManager;
 import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
-import com.w2.springtemplate.framework.shiro.jwt.BearerAuthenticFilter;
+import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
 import com.w2.springtemplate.framework.shiro.realm.BearerRealm;
 import com.w2.springtemplate.framework.shiro.realm.UserAccountRealm;
 import com.w2.springtemplate.framework.shiro.session.NoSessionWebSubjectFactory;
@@ -123,6 +123,7 @@ public class ShiroConfiguration {
 		LinkedHashMap<String, String> filterChainDefinitionMap = Maps.newLinkedHashMap();
 		filterChainDefinitionMap.put("/api/login", "login,jwt");
 		filterChainDefinitionMap.put("/doc.html", "anon");
+		filterChainDefinitionMap.put("/user/register", "anon");
 		filterChainDefinitionMap.put("/api/**", "jwt");
 		filterChainDefinitionMap.put("/**", "anon");
 		return filterChainDefinitionMap;

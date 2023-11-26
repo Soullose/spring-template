@@ -84,7 +84,7 @@ public class JwtUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Claims parseJWT(String jwt) throws Exception {
+	public static Claims parseJWT(String jwt) {
 		SecretKey secretKey = generalKey();
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwt).getPayload();
 	}
