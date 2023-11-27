@@ -121,7 +121,7 @@ public class ShiroConfiguration {
 	@Bean
 	LinkedHashMap<String, String> filterChainDefinitionMap() {
 		LinkedHashMap<String, String> filterChainDefinitionMap = Maps.newLinkedHashMap();
-		filterChainDefinitionMap.put("/api/login", "login,jwt");
+		filterChainDefinitionMap.put("/api/login", "login");
 		filterChainDefinitionMap.put("/doc.html", "anon");
 		filterChainDefinitionMap.put("/user/register", "anon");
 		filterChainDefinitionMap.put("/api/**", "jwt");
