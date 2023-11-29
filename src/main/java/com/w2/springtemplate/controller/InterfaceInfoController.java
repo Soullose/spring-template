@@ -19,13 +19,13 @@ public class InterfaceInfoController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity save() {
+    public ResponseEntity<InterfaceInfo> save() {
         InterfaceInfo info = new InterfaceInfo();
         info.setName("测试");
         info.setUrl("https:aaa.cc");
         info.setMethod("xxxxxx");
         info.setDescription("ddddddd");
         repository.save(info);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(info);
     }
 }
