@@ -1,4 +1,4 @@
 package com.w2.springtemplate.framework.command;
 
-public interface Command {
+public interface Command<R> {
 }

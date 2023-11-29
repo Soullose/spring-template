@@ -1,18 +1,19 @@
 package com.w2.springtemplate.framework.command;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.BeanFactory;
 
-@Slf4j
-@Component
-public class CommandHandlerProvider implements BeanPostProcessor {
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof CommandHandler) {
+public class CommandHandlerProvider<H extends CommandHandler<?, ?>> {
 
-        }
-        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+    private final Class<H> type;
+
+    private final BeanFactory beanFactory;
+
+    public CommandHandlerProvider(BeanFactory beanFactory, Class<H> type) {
+        this.beanFactory = beanFactory;
+        this.type = type;
+    }
+
+    public H getHandler() {
+        return beanFactory.getBean(type);
     }
 }
