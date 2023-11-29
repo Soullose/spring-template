@@ -18,20 +18,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/login")
 public class LoginController {
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@PostMapping()
-	public ResponseEntity login(HttpServletRequest request) {
-		log.info("login:{}", request.getHeader("Authorization"));
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		log.info("login:{}", LoggedInUser.fromMap((Map) SecurityUtils.getSubject().getPrincipal()));
-		// objectMapper.r
-		// UsernamePasswordToken token = new
-		// UsernamePasswordToken("user", password);
-		// Subject subject = SecurityUtils.getSubject();
-		// subject.login(token);
-		// return
-		// ResponseEntity.ok(commandBus.execute(InitSession.builder().request(request).build()));
+	public ResponseEntity<Object> login(HttpServletRequest request) {
 
 		return ResponseEntity.ok(LoggedInUser.fromMap((Map<String, Object>) SecurityUtils.getSubject().getPrincipal()));
 	}
