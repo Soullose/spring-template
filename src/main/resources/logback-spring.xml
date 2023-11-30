@@ -1,4 +1,7 @@
 <configuration>
+
+    <conversionRule conversionWord="custom_color" converterClass="com.w2.springtemplate.framework.logback.W2LogbackColor" />
+
     <appender name="colorAppender" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%d %green([%thread]) %highlight(%level) %logger{50} - %msg%n</pattern>
@@ -7,7 +10,7 @@
 
     <appender name="DEFAULT_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout  class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d %green([%thread]) %highlight(%level) %logger{50} - %highlight(%msg%n)</pattern>
+            <pattern>%d %green([%thread]) %custom_color(%level) %boldCyan(%logger{50}) - %custom_color(%msg%n)</pattern>
         </layout>
     </appender>
 
