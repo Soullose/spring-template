@@ -125,6 +125,7 @@ public class ShiroConfiguration {
 		filterChainDefinitionMap.put("/doc.html", "anon");
 		filterChainDefinitionMap.put("/user/register", "anon");
 		filterChainDefinitionMap.put("/api/**", "jwt");
+		filterChainDefinitionMap.put("/test/**", "anon");
 		filterChainDefinitionMap.put("/**", "anon");
 		return filterChainDefinitionMap;
 	}

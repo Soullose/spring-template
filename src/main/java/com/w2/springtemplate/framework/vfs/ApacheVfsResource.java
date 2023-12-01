@@ -3,6 +3,7 @@ package com.w2.springtemplate.framework.vfs;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.provider.DelegateFileObject;
 import org.apache.commons.vfs2.provider.local.LocalFile;
 import org.springframework.core.io.AbstractResource;
@@ -31,10 +32,15 @@ public class ApacheVfsResource extends AbstractResource implements WritableResou
 		METHOD_DO_ATTACH.setAccessible(true);
 	}
 
-	private final FileObject fileObject;
+	private FileObject fileObject;
 
-	public ApacheVfsResource(FileObject fileObject) {
-		this.fileObject = fileObject;
+	public ApacheVfsResource(String location) {
+		try {
+			this.fileObject = VFS.getManager().getBaseFile().resolveFile(location);
+		} catch (FileSystemException e) {
+			e.printStackTrace();
+			this.fileObject = null;
+		}
 	}
 
 	@Override
