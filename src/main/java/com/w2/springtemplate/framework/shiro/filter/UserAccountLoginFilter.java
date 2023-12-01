@@ -3,8 +3,6 @@ package com.w2.springtemplate.framework.shiro.filter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.w2.springtemplate.framework.shiro.jwt.JwtUtil;
-import com.w2.springtemplate.utils.crypto.RedisUtils;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -13,11 +11,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -102,15 +96,14 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
         log.info("-----:{}", subject.getPrincipal());
         @SuppressWarnings("unchecked")
         Map<String, Object> claims = objectMapper.convertValue(subject.getPrincipal(), Map.class);
-
         checkNotNull(claims);
         String jwt = JwtUtil.createJWT(claims.get("username").toString(), claims);
         httpResponse.setHeader(AUTHORIZATION_HEADER, BEARER + StringUtils.SPACE + jwt);
         httpResponse.setStatus(HttpServletResponse.SC_OK);
 
-        Claims claims1 = JwtUtil.parseJWT(jwt);
-        log.info("claims1:{}", claims1);
-        RedisUtils.set("logged:"+claims1.getId(), claims1, 60);
+//        Claims claims1 = JwtUtil.parseJWT(jwt);
+//        log.info("claims1:{}", claims1);
+//        RedisUtils.set("logged:"+claims1.getId(), claims1, 60);
         return true;
     }
 

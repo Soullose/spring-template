@@ -49,7 +49,7 @@ public class BearerRealm extends AuthorizingRealm {
 			BeanUtils.copyProperties(sysUser, loggedInUser);
 			loggedInUser.setHost(upToken.getHost());
 
-			return new SimpleAuthenticationInfo(loggedInUser.toMap(), upToken.getPrincipal(), getName());
+			return new SimpleAuthenticationInfo(loggedInUser, upToken.getPrincipal(), getName());
 		} catch (ExpiredJwtException e) {
 			// e.printStackTrace();
 			throw new ExpiredCredentialsException(e);

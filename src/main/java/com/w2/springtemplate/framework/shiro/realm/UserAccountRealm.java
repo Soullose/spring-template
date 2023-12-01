@@ -55,7 +55,7 @@ public class UserAccountRealm extends AuthorizingRealm {
 		BeanUtils.copyProperties(sysUser, loggedInUser);
 		loggedInUser.setHost(upToken.getHost());
 		log.info("loggedInUser:{}", loggedInUser.toMap());
-		return new SimpleAuthenticationInfo(loggedInUser.toMap(), password, getName());
+		return new SimpleAuthenticationInfo(loggedInUser, password, getName());
 	}
 
 }
