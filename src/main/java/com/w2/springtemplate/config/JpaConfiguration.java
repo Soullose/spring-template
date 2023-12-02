@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Configuration
-@EnableJpaAuditing
+@EnableJpaAuditing()
 public class JpaConfiguration {
     private static final Logger log = LoggerFactory.getLogger(JpaConfiguration.class);
 }
