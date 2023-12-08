@@ -23,7 +23,7 @@ public class InterfaceInfo extends BaseEntity implements Serializable {
 	private String url;
 	@Column(name = "method_")
 	private String method;
-	@Column(name = "description_",columnDefinition = "varchar(500) COMMENT '接口描述'")
+	@Column(name = "description_", columnDefinition = "varchar(500) COMMENT '接口描述'")
 	private String description;
 
 	@Column(name = "request_header_")
