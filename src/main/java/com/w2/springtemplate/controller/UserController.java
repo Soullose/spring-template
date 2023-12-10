@@ -2,9 +2,9 @@ package com.w2.springtemplate.controller;
 
 import com.querydsl.core.types.Predicate;
 import com.w2.springtemplate.model.QSysUser;
-import com.w2.springtemplate.model.SysUser;
+import com.w2.springtemplate.domain.SysUser;
 import com.w2.springtemplate.model.dto.SysUserRegDTO;
-import com.w2.springtemplate.repository.SysUserRepository;
+import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
 import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

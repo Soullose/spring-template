@@ -88,9 +88,7 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
     @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
                                      ServletResponse response) throws Exception {
-        log.info("onLoginSuccess");
-
-        log.debug("User login success");
+        log.debug("onLoginSuccess User login success");
 
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         log.info("-----:{}", subject.getPrincipal());

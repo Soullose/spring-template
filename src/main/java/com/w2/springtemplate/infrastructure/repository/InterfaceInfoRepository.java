@@ -1,4 +1,4 @@
-package com.w2.springtemplate.repository;
+package com.w2.springtemplate.infrastructure.repository;
 
 import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.model.InterfaceInfo;

@@ -5,7 +5,7 @@ import com.querydsl.core.types.Predicate;
 import com.w2.springtemplate.model.InterfaceInfo;
 import com.w2.springtemplate.model.QInterfaceInfo;
 import com.w2.springtemplate.model.QSysUser;
-import com.w2.springtemplate.repository.InterfaceInfoRepository;
+import com.w2.springtemplate.infrastructure.repository.InterfaceInfoRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
