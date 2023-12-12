@@ -1,7 +1,7 @@
 package com.w2.springtemplate.controller;
 
 import com.querydsl.core.types.Predicate;
-import com.w2.springtemplate.model.QSysUser;
+import com.w2.springtemplate.domain.QSysUser;
 import com.w2.springtemplate.domain.SysUser;
 import com.w2.springtemplate.model.dto.SysUserRegDTO;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;

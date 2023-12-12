@@ -2,9 +2,9 @@ package com.w2.springtemplate.controller;
 
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.Predicate;
+import com.w2.springtemplate.domain.QSysUser;
 import com.w2.springtemplate.model.InterfaceInfo;
 import com.w2.springtemplate.model.QInterfaceInfo;
-import com.w2.springtemplate.model.QSysUser;
 import com.w2.springtemplate.infrastructure.repository.InterfaceInfoRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

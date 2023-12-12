@@ -1,8 +1,8 @@
 package com.w2.springtemplate.framework.shiro.realm;
 
+import com.w2.springtemplate.domain.QSysUser;
 import com.w2.springtemplate.framework.shiro.jwt.JwtUtil;
 import com.w2.springtemplate.framework.shiro.model.LoggedInUser;
-import com.w2.springtemplate.model.QSysUser;
 import com.w2.springtemplate.domain.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
 import io.jsonwebtoken.Claims;
