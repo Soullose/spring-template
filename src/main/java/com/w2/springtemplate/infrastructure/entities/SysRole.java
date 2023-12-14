@@ -1,4 +1,4 @@
-package com.w2.springtemplate.domain;
+package com.w2.springtemplate.infrastructure.entities;
 
 import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Getter;

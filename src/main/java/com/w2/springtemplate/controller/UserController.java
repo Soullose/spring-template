@@ -1,16 +1,18 @@
 package com.w2.springtemplate.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.querydsl.core.types.Predicate;
-import com.w2.springtemplate.domain.QSysUser;
-import com.w2.springtemplate.domain.SysUser;
-import com.w2.springtemplate.model.dto.SysUserRegDTO;
+import com.w2.springtemplate.infrastructure.entities.QSysUser;
+import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
+import com.w2.springtemplate.model.dto.SysUserRegDTO;
 import com.w2.springtemplate.utils.crypto.PasswordEncoder;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "用户管理")
 @RestController

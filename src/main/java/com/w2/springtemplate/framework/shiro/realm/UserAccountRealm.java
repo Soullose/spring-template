@@ -1,17 +1,19 @@
 package com.w2.springtemplate.framework.shiro.realm;
 
-import com.querydsl.core.types.Predicate;
-import com.w2.springtemplate.domain.QSysUser;
-import com.w2.springtemplate.framework.shiro.model.LoggedInUser;
-import com.w2.springtemplate.domain.SysUser;
-import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.querydsl.core.types.Predicate;
+import com.w2.springtemplate.framework.shiro.model.LoggedInUser;
+import com.w2.springtemplate.infrastructure.entities.QSysUser;
+import com.w2.springtemplate.infrastructure.entities.SysUser;
+import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class UserAccountRealm extends AuthorizingRealm {
