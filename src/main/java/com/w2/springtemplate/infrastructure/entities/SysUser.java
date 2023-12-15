@@ -17,8 +17,16 @@ public class SysUser extends BaseEntity implements Serializable {
 	/// 登录账户,唯一.
 	@Column(name = "user_name_", unique = true)
 	private String username;
+
+	/// 密码
 	@Column(name = "password_")
 	private String password;
+
+	///姓名
 	@Column(name = "name_")
 	private String name;
+
+	/// 身份证
+	@Column(name = "id_card_")
+	private String idCard;
 }
