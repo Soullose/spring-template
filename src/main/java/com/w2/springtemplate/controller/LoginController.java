@@ -2,6 +2,8 @@ package com.w2.springtemplate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.w2.springtemplate.framework.command.CommandHandlerProvider;
+import com.w2.springtemplate.framework.command.handler.RunEnvironment;
+import com.w2.springtemplate.framework.handlers.InitTest;
 import com.w2.springtemplate.framework.shiro.model.LoggedInUser;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +26,21 @@ public class LoginController {
 	@Autowired
 	private CommandHandlerProvider commandHandlerProvider;
 
+	@Autowired
+	private RunEnvironment runEnvironment;
+
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@PostMapping()
 	public ResponseEntity<Object> login(HttpServletRequest request) {
 //		redisTemplate.opsForValue().set("a","b");
 
-//		InitTest initTest = new InitTest();
-//		initTest.setRequest(request);
+		InitTest initTest = new InitTest();
+		initTest.setRequest(request);
 //
-//		Test test = commandHandlerProvider.sendCommand(initTest);
+//		commandHandlerProvider.sendCommand(initTest);
+
+		runEnvironment.run(initTest);
 
 //		return ResponseEntity.ok(LoggedInUser.fromMap((Map<String, Object>) SecurityUtils.getSubject().getPrincipal()));
 		return ResponseEntity.ok((LoggedInUser) SecurityUtils.getSubject().getPrincipal());

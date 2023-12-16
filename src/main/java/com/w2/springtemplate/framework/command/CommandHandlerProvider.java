@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class CommandHandlerProvider {
-    private Map<Class<? extends Command<?>>, CommandHandler<?, ?>> commandHandlerMap = Maps.newLinkedHashMap();
+    private Map<Class<? extends Command<?>>, CommandHandler<?, ?>> commandHandlerMap = Maps.newHashMap();
 
     @Autowired
     public CommandHandlerProvider(List<CommandHandler<?, ?>> commandHandlers) {
