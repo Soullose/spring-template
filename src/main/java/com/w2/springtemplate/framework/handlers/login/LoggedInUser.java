@@ -1,4 +1,4 @@
-package com.w2.springtemplate.framework.shiro.model;
+package com.w2.springtemplate.framework.handlers.login;
 
 import com.google.common.collect.Maps;
 import lombok.Data;

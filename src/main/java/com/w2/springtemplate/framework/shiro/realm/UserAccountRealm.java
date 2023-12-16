@@ -8,7 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.querydsl.core.types.Predicate;
-import com.w2.springtemplate.framework.shiro.model.LoggedInUser;
+import com.w2.springtemplate.framework.handlers.login.LoggedInUser;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;

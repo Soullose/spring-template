@@ -1,6 +1,6 @@
 package com.w2.springtemplate.framework.jpa;
 
-import com.w2.springtemplate.framework.shiro.model.LoggedInUser;
+import com.w2.springtemplate.framework.handlers.login.LoggedInUser;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.lang.NonNull;
