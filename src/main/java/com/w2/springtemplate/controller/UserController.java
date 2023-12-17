@@ -1,20 +1,21 @@
 package com.w2.springtemplate.controller;
 
+import com.querydsl.core.types.Predicate;
+import com.w2.springtemplate.command.user.RegisterSysUserCommand;
 import com.w2.springtemplate.domain.model.user.SysUserService;
 import com.w2.springtemplate.domain.model.user.User;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.querydsl.core.types.Predicate;
+import com.w2.springtemplate.framework.command.handler.RunEnvironment;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
-import com.w2.springtemplate.model.dto.SysUserRegDTO;
+import com.w2.springtemplate.model.dto.RegisterUserDTO;
+import com.w2.springtemplate.model.params.RegisterSysUserParams;
 import com.w2.springtemplate.utils.crypto.PasswordEncoder;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,25 +28,20 @@ public class UserController {
 	private final PasswordEncoder passwordEncoder;
 	private final SysUserRepository sysUserRepository;
 	private final SysUserService sysUserService;
+	private final RunEnvironment runEnvironment;
 
-	public UserController(PasswordEncoder passwordEncoder, SysUserRepository sysUserRepository,SysUserService sysUserService) {
+	public UserController(PasswordEncoder passwordEncoder, SysUserRepository sysUserRepository,SysUserService sysUserService,
+						  RunEnvironment runEnvironment) {
 		this.passwordEncoder = passwordEncoder;
 		this.sysUserRepository = sysUserRepository;
 		this.sysUserService = sysUserService;
+		this.runEnvironment = runEnvironment;
 	}
 
 	@ApiOperation(value = "注册")
 	@PostMapping("/register")
-	public ResponseEntity<SysUser> userRegister(@RequestBody SysUserRegDTO userRegDTO) {
-		SysUser sysUser = new SysUser();
-		sysUser.setName(userRegDTO.getName());
-		sysUser.setUsername(userRegDTO.getUsername());
-		sysUser.setPassword(passwordEncoder.encode(userRegDTO.getPassword()));
-		// sysUser.setPassword(OpenBSDBCrypt.generate("123456".toCharArray(),new
-		// byte[16],4));
-
-		sysUserRepository.save(sysUser);
-		return ResponseEntity.ok(sysUser);
+	public ResponseEntity<RegisterUserDTO> userRegister(@RequestBody RegisterSysUserParams params) {
+		return ResponseEntity.ok(runEnvironment.run(RegisterSysUserCommand.builder().params(params).build()));
 	}
 
 	@ApiOperation(value = "校验密码")

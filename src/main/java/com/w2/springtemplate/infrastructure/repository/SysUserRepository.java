@@ -5,7 +5,7 @@ import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
-import com.w2.springtemplate.model.dto.SysUserRegDTO;
+import com.w2.springtemplate.model.dto.RegisterUserDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,10 +13,9 @@ import java.util.stream.Collectors;
 public interface SysUserRepository extends BaseJpaRepository<SysUser, String>, SysUserService {
 
 
-    default SysUserRegDTO register(SysUserRegDTO user){
-
-
-        return null;
+    default SysUser register(RegisterUserDTO user){
+        SysUser sysUser = SysUserConverter.INSTANCE.fromRegDTO(user);
+        return save(sysUser);
     }
 
     default List<User> findAllUser() {

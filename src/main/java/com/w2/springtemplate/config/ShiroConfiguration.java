@@ -123,7 +123,7 @@ public class ShiroConfiguration {
 		LinkedHashMap<String, String> filterChainDefinitionMap = Maps.newLinkedHashMap();
 		filterChainDefinitionMap.put("/api/login", "login");
 		filterChainDefinitionMap.put("/doc.html", "anon");
-		filterChainDefinitionMap.put("/user/register", "anon");
+		filterChainDefinitionMap.put("/user/register", "jwt");
 		filterChainDefinitionMap.put("/api/**", "jwt");
 		filterChainDefinitionMap.put("/test/**", "anon");
 		filterChainDefinitionMap.put("/**", "anon");

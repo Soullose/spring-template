@@ -1,13 +1,15 @@
 package com.w2.springtemplate.domain.model.user;
 
-import com.w2.springtemplate.model.dto.SysUserRegDTO;
+import com.w2.springtemplate.infrastructure.entities.SysUser;
+import com.w2.springtemplate.model.dto.RegisterUserDTO;
 
 import java.util.List;
 
 public interface SysUserService {
 
     ///注册
-    SysUserRegDTO register(SysUserRegDTO user);
+    SysUser register(RegisterUserDTO user);
 
+    /// 查找所有用户
     List<User> findAllUser();
 }
