@@ -11,10 +11,13 @@ import java.util.Optional;
 @Component
 public class W2Auditor implements AuditorAware<String> {
 
-	@NonNull
+	 @NonNull
 	@Override
 	public Optional<String> getCurrentAuditor() {
 		LoggedInUser loggedInUser = (LoggedInUser) SecurityUtils.getSubject().getPrincipal();
+		if (loggedInUser == null) {
+			return Optional.of("unknown");
+		}
 		return Optional.of(loggedInUser.getId());
 	}
 }

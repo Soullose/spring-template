@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -36,13 +37,17 @@ public class BaseEntity {
     @Column(name = "updated_at_")
     private LocalDateTime updatedAt;
 
+    @LastModifiedBy
+    @Column(name = "update_user_id_")
+    private String updateUserId;
 
-    @Column(name = "create_user_name_")
-    private String createUserName;
 
-    @PrePersist
-    public void currentLoggedInName(){
-        createUserName = new CurrentLoggedInName().getName();
-    }
+//    @Column(name = "create_user_name_")
+//    private String createUserName;
+//
+//    @PrePersist
+//    public void currentLoggedInName(){
+//        createUserName = new CurrentLoggedInName().getName();
+//    }
 
 }
