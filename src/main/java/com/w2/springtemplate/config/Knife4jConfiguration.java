@@ -34,4 +34,25 @@ public class Knife4jConfiguration {
                 .paths(PathSelectors.any())
                 .build();
     }
+
+//    @Bean(value = "knife4jDDDConfigurationBean")
+//    public Docket knife4jDDDConfigurationBean() {
+//        //指定使用Swagger2规范
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .apiInfo(new ApiInfoBuilder()
+//                        //描述字段支持Markdown语法
+//                        .title("接口文档")
+//                        .description("# spring-template RESTful APIs")
+//                        .termsOfServiceUrl("https://w2.api.cn/")
+//                        .contact(new Contact("w2", "", "xxx@xxx.com"))
+//                        .version("1.0")
+//                        .build())
+//                //分组名称
+//                .groupName("DDD服务")
+//                .select()
+//                //这里指定Controller扫描包路径
+//                .apis(RequestHandlerSelectors.basePackage("com.w2.springtemplate.interfaces.user.controller"))
+//                .paths(PathSelectors.any())
+//                .build();
+//    }
 }

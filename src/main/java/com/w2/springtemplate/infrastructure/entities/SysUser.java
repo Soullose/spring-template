@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -29,4 +30,25 @@ public class SysUser extends BaseEntity implements Serializable {
 	/// 身份证
 	@Column(name = "id_card_")
 	private String idCard;
+
+	/// 证件类型
+	@Column(name = "id_card_type_")
+	private String idCardType;
+
+
+	/// 邮箱
+	@Column(name = "email_")
+	private String email;
+
+	/// 电话
+	@Column(name = "phone_")
+	private String phone;
+
+	/// 籍贯
+	@Column(name = "native_place_")
+	private String nativePlace;
+
+	/// 生日
+	@Column(name = "birthday_")
+	private LocalDate birthday;
 }

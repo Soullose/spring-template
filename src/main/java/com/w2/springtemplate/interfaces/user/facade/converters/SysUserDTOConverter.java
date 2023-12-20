@@ -1,17 +1,18 @@
-package com.w2.springtemplate.model.converters.user;
+package com.w2.springtemplate.interfaces.user.facade.converters;
 
+import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
+import com.w2.springtemplate.infrastructure.entities.SysUser;
+import com.w2.springtemplate.interfaces.user.facade.dto.SysUserDTO;
+import com.w2.springtemplate.model.params.RegisterSysUserParams;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import com.w2.springtemplate.infrastructure.entities.SysUser;
-import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
-import com.w2.springtemplate.model.params.RegisterSysUserParams;
-
 @Mapper
-public interface UserApplicationConverter {
-    UserApplicationConverter INSTANCE = Mappers.getMapper(UserApplicationConverter.class);
+public interface SysUserDTOConverter {
+
+    SysUserDTOConverter INSTANCE = Mappers.getMapper(SysUserDTOConverter.class);
 
     @Mappings({
             @Mapping(target = "name",source = "params.name"),
@@ -27,8 +28,11 @@ public interface UserApplicationConverter {
     @Mappings({
             @Mapping(target = "id",source = "po.id"),
             @Mapping(target = "name",source = "po.name"),
-            @Mapping(target = "idCard",source = "po.idCard"),
             @Mapping(target = "username",source = "po.username"),
+            @Mapping(target = "password",source = "po.password"),
+            @Mapping(target = "email",source = "po.email"),
+            @Mapping(target = "phone",source = "po.phone"),
+            @Mapping(target = "idCard",source = "po.idCard"),
     })
-    RegisterUserDTO fromPO(SysUser po);
+    SysUserDTO fromPO(SysUser po);
 }

@@ -8,7 +8,7 @@ import com.w2.springtemplate.framework.command.handler.RunEnvironment;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
-import com.w2.springtemplate.model.dto.RegisterUserDTO;
+import com.w2.springtemplate.interfaces.user.facade.dto.SysUserDTO;
 import com.w2.springtemplate.model.params.RegisterSysUserParams;
 import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import io.swagger.annotations.Api;
@@ -40,7 +40,7 @@ public class UserController {
 
 	@ApiOperation(value = "注册")
 	@PostMapping("/register")
-	public ResponseEntity<RegisterUserDTO> userRegister(@RequestBody RegisterSysUserParams params) {
+	public ResponseEntity<SysUserDTO> userRegister(@RequestBody RegisterSysUserParams params) {
 		return ResponseEntity.ok(runEnvironment.run(RegisterSysUserCommand.builder().params(params).build()));
 	}
 

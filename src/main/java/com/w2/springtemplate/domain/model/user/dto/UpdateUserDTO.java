@@ -1,4 +1,4 @@
-package com.w2.springtemplate.model.dto;
+package com.w2.springtemplate.domain.model.user.dto;
 
 import lombok.Data;
 
