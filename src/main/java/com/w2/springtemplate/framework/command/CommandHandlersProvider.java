@@ -3,6 +3,7 @@ package com.w2.springtemplate.framework.command;
 import com.google.common.collect.Maps;
 import com.w2.springtemplate.framework.command.handler.HandlersProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationListener;
@@ -37,7 +38,15 @@ public class CommandHandlersProvider implements HandlersProvider, ApplicationLis
 				throw new RuntimeException(e);
 			}
 		}
-		log.debug("handlers:{}", handlers);
+		if (log.isDebugEnabled()) {
+			StringBuffer sb = new StringBuffer("\n\nCommand Handler [\n\n");
+			handlers.forEach((k, v) -> {
+				sb.append(String.format("%s: %s%n", StringUtils.leftPad(v, 32), k));
+			});
+			sb.append("\n]");
+
+			log.debug(sb.toString());
+		}
 	}
 
 	private Class<? extends Command<?>> getHandledCommandType(Class<?> clazz) {

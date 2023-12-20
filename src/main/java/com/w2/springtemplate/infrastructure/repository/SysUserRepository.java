@@ -6,6 +6,7 @@ import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.model.dto.RegisterUserDTO;
+import com.w2.springtemplate.model.dto.UpdateUserDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,5 +22,9 @@ public interface SysUserRepository extends BaseJpaRepository<SysUser, String>, S
     default List<User> findAllUser() {
         List<SysUser> all = this.findAll();
         return all.stream().map(SysUserConverter.INSTANCE::fromPO).collect(Collectors.toList());
+    }
+    
+    default SysUser update(UpdateUserDTO user){
+        return null;
     }
 }
