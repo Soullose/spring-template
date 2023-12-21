@@ -1,8 +1,9 @@
 package com.w2.springtemplate.framework.command;
 
-import com.google.common.collect.Maps;
-import com.w2.springtemplate.framework.command.handler.HandlersProvider;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -11,16 +12,20 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
+import com.google.common.collect.Maps;
+import com.w2.springtemplate.framework.command.handler.HandlersProvider;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class CommandHandlersProvider implements HandlersProvider, ApplicationListener<ContextRefreshedEvent>, Ordered {
-	@Inject
-	private ConfigurableListableBeanFactory beanFactory;
+
+	private final ConfigurableListableBeanFactory beanFactory;
+
+	public CommandHandlersProvider(ConfigurableListableBeanFactory beanFactory){
+		this.beanFactory = beanFactory;
+	}
 
 	private Map<Class<? extends Command<?>>, String> handlers = Maps.newHashMap();
 
