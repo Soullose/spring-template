@@ -8,4 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CheckPasswordCommand implements Command<SysUserDTO> {
+
+    private String username;
+    private String password;
 }

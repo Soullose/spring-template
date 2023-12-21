@@ -14,6 +14,8 @@ public interface SysUserService {
 	/// 更新用户
 	SysUser update(UpdateUserDTO user);
 
+	SysUser findOneByUsername(String username);
+
 	/// 查找所有用户
 	List<User> findAllUser();
 }
