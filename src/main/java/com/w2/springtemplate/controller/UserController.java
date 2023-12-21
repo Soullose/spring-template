@@ -5,10 +5,8 @@ import com.w2.springtemplate.command.user.RegisterSysUserCommand;
 import com.w2.springtemplate.domain.model.user.SysUserService;
 import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.framework.command.handler.RunEnvironment;
-import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
 import com.w2.springtemplate.interfaces.user.facade.dto.SysUserDTO;
 import com.w2.springtemplate.model.params.RegisterSysUserParams;
-import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +21,10 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-	private final PasswordEncoder passwordEncoder;
-	private final SysUserRepository sysUserRepository;
 	private final SysUserService sysUserService;
 	private final RunEnvironment runEnvironment;
 
-	public UserController(PasswordEncoder passwordEncoder, SysUserRepository sysUserRepository,SysUserService sysUserService,
-						  RunEnvironment runEnvironment) {
-		this.passwordEncoder = passwordEncoder;
-		this.sysUserRepository = sysUserRepository;
+	public UserController(SysUserService sysUserService, RunEnvironment runEnvironment) {
 		this.sysUserService = sysUserService;
 		this.runEnvironment = runEnvironment;
 	}
@@ -45,12 +38,13 @@ public class UserController {
 	@ApiOperation(value = "校验密码")
 	@GetMapping("/check")
 	public ResponseEntity<SysUserDTO> check(@RequestParam String username, @RequestParam String password) {
-		return ResponseEntity.ok(runEnvironment.run(CheckPasswordCommand.builder().username(username).password(password).build()));
+		return ResponseEntity
+				.ok(runEnvironment.run(CheckPasswordCommand.builder().username(username).password(password).build()));
 	}
 
 	@ApiOperation(value = "获取所有用户")
 	@GetMapping("/findAllUser")
-	public ResponseEntity<List<User>> findAllUser(){
+	public ResponseEntity<List<User>> findAllUser() {
 		return ResponseEntity.ok(sysUserService.findAllUser());
 	}
 
