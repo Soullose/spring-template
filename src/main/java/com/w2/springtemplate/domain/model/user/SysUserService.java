@@ -3,9 +3,11 @@ package com.w2.springtemplate.domain.model.user;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface SysUserService {
 
 	/// 注册

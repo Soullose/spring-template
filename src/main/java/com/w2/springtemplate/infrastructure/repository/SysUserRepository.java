@@ -8,11 +8,13 @@ import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Repository
 public interface SysUserRepository extends BaseJpaRepository<SysUser, String>, SysUserService {
@@ -34,6 +36,8 @@ public interface SysUserRepository extends BaseJpaRepository<SysUser, String>, S
 	}
 
 	default SysUser update(UpdateUserDTO user) {
-		return null;
+		SysUser sysUser = findById(user.getId()).orElseThrow(EntityNotFoundException::new);
+		BeanUtils.copyProperties(user,sysUser);
+		return save(sysUser);
 	}
 }
