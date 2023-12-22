@@ -6,6 +6,7 @@ import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
+import com.w2.springtemplate.utils.crypto.PasswordEncoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
+	/// 默认密码
+	private final static String DEFAULT_PASSWORD = "123456";
+
+	private final PasswordEncoder passwordEncoder;
 	private final SysUserRepository sysUserRepository;
 
-	public SysUserServiceImpl(SysUserRepository sysUserRepository) {
+	public SysUserServiceImpl(PasswordEncoder passwordEncoder,SysUserRepository sysUserRepository) {
+		this.passwordEncoder = passwordEncoder;
 		this.sysUserRepository = sysUserRepository;
 	}
 
@@ -45,5 +51,18 @@ public class SysUserServiceImpl implements SysUserService {
 	public List<User> findAllUser() {
 		List<SysUser> all = sysUserRepository.findAll();
 		return all.stream().map(SysUserConverter.INSTANCE::fromPO).collect(Collectors.toList());
+	}
+
+	/**
+	 * 重置用户密码
+	 *
+	 * @param id 用户ID
+	 * @return            {@link SysUser}
+	 */
+	@Override
+	public SysUser resetPassword(String id) {
+		SysUser sysUser = sysUserRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		sysUser.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
+		return sysUserRepository.save(sysUser);
 	}
 }

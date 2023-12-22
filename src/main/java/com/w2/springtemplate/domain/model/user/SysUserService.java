@@ -21,4 +21,11 @@ public interface SysUserService {
 
 	/// 查找所有用户
 	List<User> findAllUser();
+
+	/**
+	 * 重置密码
+	 * @param id		用户ID
+	 * @return			{@link SysUser}
+	 */
+	SysUser resetPassword(String id);
 }

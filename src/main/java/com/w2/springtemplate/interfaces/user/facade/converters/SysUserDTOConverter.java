@@ -20,15 +20,16 @@ public interface SysUserDTOConverter {
 	@Mappings({@Mapping(target = "name", source = "params.name"),
 			@Mapping(target = "username", source = "params.username"),
 			@Mapping(target = "password", source = "params.password"),
-			@Mapping(target = "email", source = "params.email"), @Mapping(target = "phone", source = "params.phone"),
+			@Mapping(target = "email", source = "params.email"),
+			@Mapping(target = "phone", source = "params.phone"),
 			@Mapping(target = "address", source = "params.address"),
 			@Mapping(target = "idCard", source = "params.idCard"),})
 	RegisterUserDTO toDTO(RegisterSysUserParams params);
 
-//	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@BeanMapping(ignoreByDefault = true)
 	@Mappings({
 			@Mapping(target = "id", source = "params.id"),
-			@Mapping(target = "name", source = "params.name",nullValueCheckStrategy = ALWAYS),
+			@Mapping(target = "name", source = "params.name",ignore = true),
 			@Mapping(target = "username", source = "params.username"),
 			@Mapping(target = "password", source = "params.password"),
 			@Mapping(target = "email", source = "params.email"),
@@ -38,9 +39,12 @@ public interface SysUserDTOConverter {
 	})
 	UpdateUserDTO toUpdateDTO(UpdateSysUserParams params);
 
-	@Mappings({@Mapping(target = "id", source = "po.id"), @Mapping(target = "name", source = "po.name"),
+	@Mappings({@Mapping(target = "id", source = "po.id"),
+			@Mapping(target = "name", source = "po.name"),
 			@Mapping(target = "username", source = "po.username"),
-			@Mapping(target = "password", source = "po.password"), @Mapping(target = "email", source = "po.email"),
-			@Mapping(target = "phone", source = "po.phone"), @Mapping(target = "idCard", source = "po.idCard"),})
+			@Mapping(target = "password", source = "po.password"),
+			@Mapping(target = "email", source = "po.email"),
+			@Mapping(target = "phone", source = "po.phone"),
+			@Mapping(target = "idCard", source = "po.idCard"),})
 	SysUserDTO fromPO(SysUser po);
 }

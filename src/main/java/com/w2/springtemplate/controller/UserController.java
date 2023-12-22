@@ -6,10 +6,13 @@ import com.w2.springtemplate.command.user.UpdateSysUserCommand;
 import com.w2.springtemplate.domain.model.user.SysUserService;
 import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.framework.command.handler.RunEnvironment;
+import com.w2.springtemplate.interfaces.user.facade.converters.SysUserDTOConverter;
 import com.w2.springtemplate.interfaces.user.facade.dto.SysUserDTO;
 import com.w2.springtemplate.model.params.RegisterSysUserParams;
 import com.w2.springtemplate.model.params.UpdateSysUserParams;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +57,16 @@ public class UserController {
 	@GetMapping("/findAllUser")
 	public ResponseEntity<List<User>> findAllUser() {
 		return ResponseEntity.ok(sysUserService.findAllUser());
+	}
+
+
+	@ApiOperation(value = "重置用户密码")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "id", value = "用户编号", required=true, dataType = "String")
+	})
+	@GetMapping("/resetPassword")
+	public ResponseEntity<SysUserDTO> resetPassword(@RequestParam String id) {
+		return ResponseEntity.ok(SysUserDTOConverter.INSTANCE.fromPO(sysUserService.resetPassword(id)));
 	}
 
 }
