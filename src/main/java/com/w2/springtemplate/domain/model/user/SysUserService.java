@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/// 领域事件
 @Service
 public interface SysUserService {
 
