@@ -3,12 +3,10 @@ package com.w2.springtemplate.domain.model.user;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /// 领域事件
-@Service
 public interface SysUserService {
 
 	/// 注册
@@ -28,4 +26,12 @@ public interface SysUserService {
 	 * @return			{@link SysUser}
 	 */
 	SysUser resetPassword(String id);
+
+	/**
+	 * 修改用户密码
+	 * @param id			用户ID
+	 * @param newPassword	用户新密码
+	 * @return				{@link SysUser}
+	 */
+	SysUser changeSysUserPassword(String id,String newPassword);
 }

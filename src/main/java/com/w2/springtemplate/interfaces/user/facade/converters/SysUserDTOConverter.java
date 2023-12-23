@@ -11,8 +11,9 @@ import com.w2.springtemplate.model.params.RegisterSysUserParams;
 import com.w2.springtemplate.model.params.UpdateSysUserParams;
 
 import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
+import static org.mapstruct.ReportingPolicy.IGNORE;
 
-@Mapper(nullValueCheckStrategy = ALWAYS)
+@Mapper(nullValueCheckStrategy = ALWAYS,unmappedTargetPolicy = IGNORE)
 public interface SysUserDTOConverter {
 
 	SysUserDTOConverter INSTANCE = Mappers.getMapper(SysUserDTOConverter.class);
@@ -38,6 +39,9 @@ public interface SysUserDTOConverter {
 			@Mapping(target = "idCard", source = "params.idCard"),
 	})
 	UpdateUserDTO toUpdateDTO(UpdateSysUserParams params);
+
+	@BeanMapping( nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE )
+	UpdateUserDTO updateUserDtoFromParams( UpdateSysUserParams params,@MappingTarget UpdateUserDTO dto);
 
 	@Mappings({@Mapping(target = "id", source = "po.id"),
 			@Mapping(target = "name", source = "po.name"),

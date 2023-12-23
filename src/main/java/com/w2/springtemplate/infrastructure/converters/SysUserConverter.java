@@ -4,9 +4,7 @@ import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
@@ -41,6 +39,8 @@ public interface SysUserConverter {
     })
     SysUser fromUpdateDTO(UpdateUserDTO dto);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    SysUser updateUserDTOFromPO(UpdateUserDTO dto, @MappingTarget SysUser po);
 
     @Mappings({
             @Mapping(target = "id",source = "po.id"),

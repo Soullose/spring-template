@@ -27,7 +27,6 @@ public class UpdateSysUserCommandHandler implements CommandHandler<SysUserDTO, U
 	public SysUserDTO handle(UpdateSysUserCommand command) {
 		UpdateSysUserParams params = command.getParams();
 		UpdateUserDTO updateUserDTO = SysUserDTOConverter.INSTANCE.toUpdateDTO(params);
-
 		log.info("updateUserDTO={}", updateUserDTO);
 		if (params.getPassword() != null) {
 			String passwordEncode = passwordEncoder.encode(params.getPassword());

@@ -22,9 +22,18 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        log.debug("ApacheVfsProtocolResolver");
+        if (log.isDebugEnabled()){
+            log.debug("ApacheVfsProtocolResolver");
+        }
         // 添加虚拟文件协议分解器
         applicationContext.addProtocolResolver(newProtocolResolver());
+    }
+
+    /**
+     * 协议解析器
+     */
+    public ProtocolResolver newProtocolResolver() {
+        return new ApacheVfsProtocolResolver();
     }
 
     public ApacheVfsInitializer() {
@@ -33,8 +42,8 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
     /**
      * 获取虚拟根目录，如果根目录不存在则动态创建
      *
-     * @return
-     * @throws FileSystemException
+     * @return {@link FileObject}
+     *
      */
     private FileObject getOrCreateDataDir() throws FileSystemException {
         FileSystemManager fileSystemManager = VFS.getManager();
@@ -88,12 +97,5 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
         } catch (FileSystemException e) {
             ExceptionUtils.rethrow(e);
         }
-    }
-
-    /**
-     * 协议解析器
-     */
-    public ProtocolResolver newProtocolResolver() {
-        return new ApacheVfsProtocolResolver();
     }
 }

@@ -7,13 +7,16 @@ import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
 import com.w2.springtemplate.utils.crypto.PasswordEncoder;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
@@ -28,25 +31,47 @@ public class SysUserServiceImpl implements SysUserService {
 		this.sysUserRepository = sysUserRepository;
 	}
 
+	/**
+	 * 注册用户
+	 * @param user	领域DTO
+	 * @return		{@link SysUser}
+	 */
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public SysUser register(RegisterUserDTO user) {
 		SysUser sysUser = SysUserConverter.INSTANCE.fromRegDTO(user);
 		return sysUserRepository.save(sysUser);
 	}
 
+	/**
+	 * 修改用户信息
+	 * @param user	领域DTO
+	 * @return		{@link SysUser}
+	 * Isolation.READ_COMMITTED-读已提交，即能够读到那些已经提交的数据，自然能够防止脏读，但是无法限制不可重复读和幻读
+	 */
+	@Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
 	@Override
 	public SysUser update(UpdateUserDTO user) {
 		SysUser sysUser = sysUserRepository.findById(user.getId()).orElseThrow(EntityNotFoundException::new);
-		BeanUtils.copyProperties(user, sysUser);
-		return sysUserRepository.save(sysUser);
+		log.debug("update:{}",SysUserConverter.INSTANCE.updateUserDTOFromPO(user,sysUser));
+		return sysUserRepository.save(SysUserConverter.INSTANCE.updateUserDTOFromPO(user,sysUser));
 	}
 
+	/**
+	 * 根据用户名查找用户
+	 * @param username	用户名
+	 * @return		    {@link SysUser}
+	 */
 	@Override
 	public SysUser findOneByUsername(String username) {
 		QSysUser qSysUser = QSysUser.sysUser;
 		return sysUserRepository.findOne(qSysUser.username.eq(username)).orElseThrow(EntityNotFoundException::new);
 	}
 
+	/**
+	 * 查询所有用户
+	 * @return	{@link List<User>}
+	 */
 	@Override
 	public List<User> findAllUser() {
 		List<SysUser> all = sysUserRepository.findAll();
@@ -57,12 +82,28 @@ public class SysUserServiceImpl implements SysUserService {
 	 * 重置用户密码
 	 *
 	 * @param id 用户ID
-	 * @return            {@link SysUser}
+	 * @return   {@link SysUser}
 	 */
+	@Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
 	@Override
 	public SysUser resetPassword(String id) {
 		SysUser sysUser = sysUserRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 		sysUser.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
+		return sysUserRepository.save(sysUser);
+	}
+
+	/**
+	 * 修改用户密码
+	 *
+	 * @param id          用户ID
+	 * @param newPassword 用户新密码
+	 * @return                {@link SysUser}
+	 */
+	@Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+	@Override
+	public SysUser changeSysUserPassword(String id, String newPassword) {
+		SysUser sysUser = sysUserRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		sysUser.setPassword(passwordEncoder.encode(newPassword));
 		return sysUserRepository.save(sysUser);
 	}
 }

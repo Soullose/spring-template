@@ -1,5 +1,6 @@
 package com.w2.springtemplate.controller;
 
+import com.w2.springtemplate.command.user.ChangePasswordCommand;
 import com.w2.springtemplate.command.user.CheckPasswordCommand;
 import com.w2.springtemplate.command.user.RegisterSysUserCommand;
 import com.w2.springtemplate.command.user.UpdateSysUserCommand;
@@ -67,6 +68,17 @@ public class UserController {
 	@GetMapping("/resetPassword")
 	public ResponseEntity<SysUserDTO> resetPassword(@RequestParam String id) {
 		return ResponseEntity.ok(SysUserDTOConverter.INSTANCE.fromPO(sysUserService.resetPassword(id)));
+	}
+
+
+	@ApiOperation(value = "修改用户密码")
+	@ApiImplicitParams(value = {
+			@ApiImplicitParam(name = "id", value = "用户编号", required=true, dataType = "String"),
+			@ApiImplicitParam(name = "password", value = "用户密码", required=true, dataType = "String")
+	})
+	@GetMapping("/changeUserPassword")
+	public ResponseEntity<SysUserDTO> changeUserPassword(@RequestParam String id,@RequestParam String password) {
+		return ResponseEntity.ok(runEnvironment.run(ChangePasswordCommand.builder().id(id).password(password).build()));
 	}
 
 }
