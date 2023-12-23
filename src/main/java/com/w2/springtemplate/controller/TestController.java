@@ -14,7 +14,6 @@ import com.amazonaws.services.s3.model.*;
 import com.w2.springtemplate.framework.oos.client.OOSClient;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -345,12 +344,13 @@ public class TestController {
 
 
     @GetMapping("/getFile")
-    public ResponseEntity<String> readVfsFile(){
-        Resource resource = resourceLoader.getResource("vfs://ttttt.txt");
+    public ResponseEntity<Object> readVfsFile(){
+        Resource resource = resourceLoader.getResource("vfs://cccccc/ttttt.text");
+        int b = 0;
         try {
             InputStream inputStream = resource.getInputStream();
             while (true) {
-                int b = inputStream.read();
+                b = inputStream.read();
                 if (b == -1) {
                     // 代表文件已经全部读完
                     break;
@@ -360,7 +360,7 @@ public class TestController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(b);
     }
 
 

@@ -1,1 +1,6 @@
-org.springframework.context.ApplicationContextInitializer=com.w2.springtemplate.framework.vfs.ApacheVfsInitializer
+
+
+#org.springframework.boot.SpringApplicationRunListener=com.w2.springtemplate.framework.W2SpringApplicationRunListener
+
+
+org.springframework.context.ApplicationContextInitializer=com.w2.springtemplate.framework.vfs.ApacheVfsApplicationContextInitializer

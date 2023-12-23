@@ -8,37 +8,18 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ProtocolResolver;
-import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
 
+import static com.w2.springtemplate.framework.vfs.ApacheVfsConstants.DATA_DIR_NAME;
+import static com.w2.springtemplate.framework.vfs.ApacheVfsConstants.VFS_PROTOCOL;
+
 @Slf4j
-@Component
-public class ApacheVfsInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+//@Component
+public class ApacheVfsInitializer{
 
 
-    @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        if (log.isDebugEnabled()){
-            log.debug("ApacheVfsProtocolResolver");
-        }
-        // 添加虚拟文件协议分解器
-        applicationContext.addProtocolResolver(newProtocolResolver());
-    }
-
-    /**
-     * 协议解析器
-     */
-    public ProtocolResolver newProtocolResolver() {
-        return new ApacheVfsProtocolResolver();
-    }
-
-    public ApacheVfsInitializer() {
-        this.init();
-    }
     /**
      * 获取虚拟根目录，如果根目录不存在则动态创建
      *
@@ -48,10 +29,9 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
     private FileObject getOrCreateDataDir() throws FileSystemException {
         FileSystemManager fileSystemManager = VFS.getManager();
         FileObject dataDir = fileSystemManager.resolveFile(SystemUtils.getUserDir().getAbsolutePath())
-                .resolveFile(ApacheVfsConstants.DATA_DIR_NAME);
+                .resolveFile(DATA_DIR_NAME);
 
         if (!dataDir.exists()) {
-            log.debug("11111");
             dataDir.createFolder();
         }
 
@@ -62,10 +42,10 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
      * 初始化
      */
     public void init() {
-        log.info("ApacheVfs初始化");
+        log.debug("ApacheVfs初始化");
         try {
             // 创建虚拟根目录
-            FileObject rootDir = VFS.getManager().createVirtualFileSystem(ApacheVfsConstants.VFS_PROTOCOL);
+            FileObject rootDir = VFS.getManager().createVirtualFileSystem(VFS_PROTOCOL);
 
             // 获取本地数据目录，并将该目录下的文件夹挂载到根目录
             Stream.of(getOrCreateDataDir().getChildren()).filter((file) -> {
@@ -80,7 +60,7 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
                 try {
                     rootDir.getFileSystem().addJunction(baseName, folder);
 //					 if (log.isTraceEnabled()) {
-                    log.trace("mount {} to vfs://{}", rootDir.getPublicURIString(), baseName);
+                    log.debug("mount {} to vfs://{}", rootDir.getPublicURIString(), baseName);
 //					 }
                 } catch (FileSystemException e) {
                     ExceptionUtils.rethrow(e);
@@ -97,5 +77,12 @@ public class ApacheVfsInitializer implements ApplicationContextInitializer<Confi
         } catch (FileSystemException e) {
             ExceptionUtils.rethrow(e);
         }
+    }
+
+    /**
+     * 协议解析器
+     */
+    public ProtocolResolver newProtocolResolver() {
+        return new ApacheVfsProtocolResolver();
     }
 }
