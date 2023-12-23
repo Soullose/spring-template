@@ -1,7 +1,7 @@
 # spring-template
 
 #### 介绍
-springboot项目模版-ORM(JPA,QueryDSL)-session(redis)
+springboot项目模版-ORM(JPA,QueryDSL)-JWT(redis)
 
 #### 软件架构
 软件架构说明
