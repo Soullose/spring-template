@@ -35,6 +35,7 @@ public class ApacheVfsResource extends AbstractResource implements WritableResou
 	private FileObject fileObject;
 
 	public ApacheVfsResource(String location) {
+		log.debug("ApacheVfsResource:{}",location);
 		try {
 			this.fileObject = VFS.getManager().getBaseFile().resolveFile(location);
 		} catch (FileSystemException e) {

@@ -12,8 +12,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.w2.springtemplate.framework.oos.client.OOSClient;
+import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -342,25 +345,20 @@ public class TestController {
         return ResponseEntity.ok(oosClient.getObjectUrl(key));
     }
 
-
+    @ApiOperation(value = "获取文件内容基于Apache-VFS")
     @GetMapping("/getFile")
     public ResponseEntity<Object> readVfsFile(){
         Resource resource = resourceLoader.getResource("vfs://cccccc/ttttt.text");
-        int b = 0;
+        ApacheVfsResource apacheVfsResource = (ApacheVfsResource)resourceLoader.getResource("vfs://cccccc/ttttt.text");
+
+        List lines = null;
         try {
-            InputStream inputStream = resource.getInputStream();
-            while (true) {
-                b = inputStream.read();
-                if (b == -1) {
-                    // 代表文件已经全部读完
-                    break;
-                }
-                System.out.printf("%c", b);
-            }
+            File file = apacheVfsResource.getFile();
+            lines = FileUtils.readLines(file, "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok(b);
+        return ResponseEntity.ok(lines);
     }
 
 
