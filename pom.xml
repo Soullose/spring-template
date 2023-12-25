@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
-            <version>1.76</version>
+            <version>1.77</version>
         </dependency>
 
 
@@ -170,6 +170,19 @@
             <groupId>jakarta.inject</groupId>
             <artifactId>jakarta.inject-api</artifactId>
             <version>1.0.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.zengfr/easymodbus4j -->
+        <dependency>
+            <groupId>com.github.zengfr</groupId>
+            <artifactId>easymodbus4j</artifactId>
+            <version>0.0.5</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.zengfr/easymodbus4j-client -->
+        <dependency>
+            <groupId>com.github.zengfr</groupId>
+            <artifactId>easymodbus4j-client</artifactId>
+            <version>0.0.5</version>
         </dependency>
 
 
