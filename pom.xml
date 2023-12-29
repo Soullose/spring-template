@@ -101,6 +101,11 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
         <!--引入Knife4j的官方start包,该指南选择Spring Boot版本<3.0,开发者需要注意-->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

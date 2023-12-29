@@ -7,19 +7,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.w2.springtemplate.utils.crypto.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.checkerframework.checker.units.qual.K;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Duration;
 
 @Slf4j
 @Order(value = 1)
@@ -36,12 +43,25 @@ public class RedisConfiguration {
     @Bean
     LettuceConnectionFactory redisConnectionFactory() {
         log.info("redisProperties:{}", redisProperties);
+        GenericObjectPoolConfig genericObjectPoolConfig = new GenericObjectPoolConfig();
+        genericObjectPoolConfig.setMaxIdle(8);
+        genericObjectPoolConfig.setMinIdle(2);
+        genericObjectPoolConfig.setMaxTotal(10);
+        genericObjectPoolConfig.setMaxWait(Duration.ofMillis(300));
+        genericObjectPoolConfig.setTimeBetweenEvictionRuns(Duration.ofMillis(100));
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
         redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
         redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+
+        LettuceClientConfiguration clientConfig = LettucePoolingClientConfiguration.builder()
+                .commandTimeout(Duration.ofMillis(100))
+                .shutdownTimeout(Duration.ofMillis(100))
+                .poolConfig(genericObjectPoolConfig)
+                .build();
+
+        return new LettuceConnectionFactory(redisStandaloneConfiguration,clientConfig);
     }
 
     @Bean
@@ -69,4 +89,10 @@ public class RedisConfiguration {
         return RedisCacheManager.create(redisConnectionFactory);
     }
 
+    @Bean
+    @ConfigurationProperties(prefix = "spring.redis.lettuce.pool")
+    @Scope(value = "prototype")
+    public GenericObjectPoolConfig redisPool(){
+        return new GenericObjectPoolConfig();
+    }
 }
