@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.bouncycastle.pqc.legacy.math.linearalgebra.ByteUtils;
+import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -384,14 +385,20 @@ public class TestController {
 			SM4Util instance = new SM4Util();
 			//解密校验
 			String cryptText = "6c24d235d11a8c1428546ab114500225"; //2d529a9f0042384350311823e3bc11fde5cf93a25b035cda82baf56ccf1f306c   8781d981f7ffd6c1a780f8b213f596aa535c8bb6389923f8329f79a1707966e2 6c24d235d11a8c1428546ab114500225
-			byte[] b = instance.decrypt(cipher, ByteUtils.fromHexString(cryptText), sm4Key, iv);
+
+			log.debug("1:{}",Hex.decode(cryptText));
+			log.debug("2:{}",ByteUtils.fromHexString(cryptText));
+			byte[] b = instance.decrypt(cipher, Hex.decode(cryptText), sm4Key, iv);
 			log.debug("I am encrypted by golang SM4.{}", new String(b));
 
 			//加密校验，SM4加密以下明文以供Go SM4进行解密验证
 			byte[] msg = "你好!".getBytes();
 			byte[] cryptData = instance.encrypt(cipher, msg, sm4Key, iv);
-			String cryptStr = ByteUtils.toHexString(cryptData);
+			String cryptStr = Hex.toHexString(cryptData);
+
 			log.debug(cryptStr);
+
+			log.debug("hex:{}",Hex.toHexString(cryptData));
 
 		} catch (Exception e) {
 			e.printStackTrace();
