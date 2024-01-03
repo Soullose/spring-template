@@ -15,12 +15,21 @@ import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Cipher;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4CipherPool;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Mode;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Util;
+import com.w2.springtemplate.framework.io.fonts.FontUtils;
+import com.w2.springtemplate.framework.io.pdf.PdfBoxUtils;
 import com.w2.springtemplate.framework.oos.client.OOSClient;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.fontbox.ttf.TTFParser;
+import org.apache.fontbox.ttf.TrueTypeFont;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.bouncycastle.pqc.legacy.math.linearalgebra.ByteUtils;
 import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -404,6 +413,60 @@ public class TestController {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok().build();
+	}
+
+	@ApiOperation(value = "测试pdfBox")
+	@GetMapping(value = "/testPdfBox")
+	public ResponseEntity testPdfBox() throws IOException {
+		FontUtils fontUtils = new FontUtils(resourceLoader);
+		InputStream miFontL3TTF = fontUtils.getMIFontL3TTF();
+		File miFontL3TTFFile = fontUtils.getMIFontL3TTFFile();
+		InputStream miFontTTF = fontUtils.getMIFontTTF();
+		log.debug("{}",miFontL3TTF != null);
+		log.debug("{}",miFontL3TTFFile != null);
+		TTFParser ttfParser = new TTFParser();
+		TrueTypeFont trueTypeFont = ttfParser.parseEmbedded(miFontTTF);
+		Integer marginX = 50;
+		Integer marginY = 50;
+		PDRectangle a4 = PDRectangle.A4;
+		PDDocument document = new PDDocument();
+		PDType0Font font = PDType0Font.load(document,trueTypeFont,true);
+		PDPage pdPage = new PDPage(a4);
+		document.addPage(pdPage);
+		PDPageContentStream contentStream = new PDPageContentStream(document, pdPage);
+
+		PdfBoxUtils.beginTextSteam(contentStream, 20f, marginX.floatValue(), a4.getHeight()-(2*marginY));
+		// 书写信息
+		PdfBoxUtils.drawParagraph(contentStream, "物流单摘要", font, 18);
+		PdfBoxUtils.createEmptyParagraph(contentStream, 2);
+
+		contentStream.setFont(font, 13);
+		PdfBoxUtils.drawParagraph(contentStream, "物流单号：\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a02022099");
+		PdfBoxUtils.drawParagraph(contentStream, "结算时间段：\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0从20200909到20200807");
+		PdfBoxUtils.drawParagraph(contentStream, "商品总数量(件)：\u00a0100000");
+		PdfBoxUtils.drawParagraph(contentStream, "商品总价格(元)：\u00a0100000000000");
+		PdfBoxUtils.drawParagraph(contentStream, "买卖人名称：\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0李白");
+		PdfBoxUtils.createEmptyParagraph(contentStream, 4);
+
+		PdfBoxUtils.drawParagraph(contentStream, "公司(盖章)：");
+		PdfBoxUtils.createEmptyParagraph(contentStream, 2);
+		contentStream.showText("日期：");
+
+		PdfBoxUtils.createEmptyParagraph(contentStream, 16);
+		contentStream.newLineAtOffset(195, 0);
+		PdfBoxUtils.drawParagraph(contentStream, "小熊猫超级防伪码", font, 12);
+
+		PdfBoxUtils.endTextSteam(contentStream);
+
+		// 划线
+		PdfBoxUtils.drawLine(contentStream, marginX, 545, PDRectangle.A4.getWidth() - marginX, 545);
+		PdfBoxUtils.drawLine(contentStream, marginX, 410, PDRectangle.A4.getWidth() - marginX, 410);
+
+		contentStream.close();
+		// 贴图
+		document.save(new FileOutputStream(new File("D:\\dev\\IdeaProjects\\spring-template\\test2.pdf")));
+		document.close();
+		return  ResponseEntity.ok().build();
 	}
 
 }
