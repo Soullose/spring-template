@@ -7,6 +7,8 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,8 +21,8 @@ public class ModbusClient {
                 0x00, 0x06,
                 0x02,
                 0x03,
-                0x00, 0x00,
-                0x00, (byte) 0x0a
+                0x00, 0x05,
+                0x00, (byte) 0x02
         };
 
 
@@ -30,6 +32,7 @@ public class ModbusClient {
         Bootstrap bootstrap = new Bootstrap()
                 .group(new NioEventLoopGroup())
                 .channel(NioSocketChannel.class)
+                .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
@@ -38,10 +41,24 @@ public class ModbusClient {
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                                 log2((ByteBuf)msg);
                                 log.debug("{}",(ByteBuf)msg);
-                                Thread.sleep(1500);
+                                Thread.sleep(1000);
                                 ctx.writeAndFlush(ctx.alloc().buffer().writeBytes(bytes));
                             }
-                        });
+
+//                            @Override
+//                            public void userEventTriggered(ChannelHandlerContext ctx, Object event) throws Exception {
+//                                if (event instanceof IdleStateEvent) {
+//                                    log.info("[userEventTriggered][发起一次心跳]");
+////                                    HeartbeatRequest heartbeatRequest = new HeartbeatRequest();
+////                                    ctx.writeAndFlush(new Invocation())
+////                                            .addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+//                                } else {
+//                                    super.userEventTriggered(ctx, event);
+//                                }
+//                            }
+                        })// 空闲检测
+                                .addLast(new IdleStateHandler(60, 0, 0))
+                                .addLast(new ReadTimeoutHandler(3 * 60));
                     }
                 });
 
