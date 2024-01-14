@@ -1,5 +1,6 @@
 package com.w2.springtemplate.framework.netty.study.server;
 
+import com.w2.springtemplate.framework.netty.study.server.handler.W2NettyServerHandlerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -8,8 +9,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 
 @Slf4j
@@ -19,6 +23,8 @@ public class W2NettyServer {
 	/// 端口号
 	private static final Integer PORT = 19527;
 
+	@Autowired
+	private W2NettyServerHandlerInitializer nettyServerHandlerInitializer;
 	/**
 	 * boss 线程组，用于服务端接受客户端的连接
 	 */
@@ -33,6 +39,7 @@ public class W2NettyServer {
 	private Channel channel;
 
 	/// 启动
+	@PostConstruct
 	public void start() throws InterruptedException {
 		// 创建 ServerBootstrap 对象，用于 Netty Server 启动
 		ServerBootstrap bootstrap = new ServerBootstrap();
@@ -43,7 +50,7 @@ public class W2NettyServer {
 				.option(ChannelOption.SO_BACKLOG, 1024) // 服务端 accept 队列的大小
 				.childOption(ChannelOption.SO_KEEPALIVE, true) // TCP Keepalive 机制，实现 TCP 层级的心跳保活功能
 				.childOption(ChannelOption.TCP_NODELAY, true) // 允许较小的数据包的发送，降低延迟
-//                .childHandler(nettyServerHandlerInitializer)
+                .childHandler(nettyServerHandlerInitializer)
 		;
 		// 绑定端口，并同步等待成功，即启动服务端
 		ChannelFuture future = bootstrap.bind().sync();
@@ -53,6 +60,7 @@ public class W2NettyServer {
 		}
 	}
 
+	@PreDestroy
 	public void shutdown() {
 		// 关闭 Netty Server
 		if (channel != null) {
