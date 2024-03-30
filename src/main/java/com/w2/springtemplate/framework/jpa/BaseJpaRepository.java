@@ -4,7 +4,12 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import javax.persistence.EntityManager;
+
 
 @NoRepositoryBean
 public interface BaseJpaRepository<T, ID> extends JpaRepositoryImplementation<T, ID>, QuerydslPredicateExecutor<T> {
+
+//    EntityManager get
+
 }

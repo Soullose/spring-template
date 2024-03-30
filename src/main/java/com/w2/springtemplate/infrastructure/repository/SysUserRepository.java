@@ -29,4 +29,6 @@ public interface SysUserRepository extends BaseJpaRepository<SysUser, String> {
 //		BeanUtils.copyProperties(user,sysUser);
 //		return save(sysUser);
 //	}
+
+
 }
