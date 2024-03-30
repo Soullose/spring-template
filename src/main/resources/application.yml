@@ -43,7 +43,7 @@ spring:
         max-wait: -1ms
   mvc:
     pathmatch:
-      matching-strategy: ant_path_matcher
+      matching-strategy: ANT_PATH_MATCHER
 
 
 server:
