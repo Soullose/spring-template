@@ -1,20 +1,23 @@
 package com.w2.springtemplate.domain.model.user;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.apache.shiro.authc.credential.PasswordService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
 import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
-import com.w2.springtemplate.utils.crypto.PasswordEncoder;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -23,11 +26,14 @@ public class SysUserServiceImpl implements SysUserService {
 	/// 默认密码
 	private final static String DEFAULT_PASSWORD = "123456";
 
-	private final PasswordEncoder passwordEncoder;
+//	private final PasswordEncoder passwordEncoder;
+
+	private final PasswordService passwordService;
+
 	private final SysUserRepository sysUserRepository;
 
-	public SysUserServiceImpl(PasswordEncoder passwordEncoder,SysUserRepository sysUserRepository) {
-		this.passwordEncoder = passwordEncoder;
+	public SysUserServiceImpl(PasswordService passwordService,SysUserRepository sysUserRepository) {
+		this.passwordService = passwordService;
 		this.sysUserRepository = sysUserRepository;
 	}
 
@@ -88,7 +94,7 @@ public class SysUserServiceImpl implements SysUserService {
 	@Override
 	public SysUser resetPassword(String id) {
 		SysUser sysUser = sysUserRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		sysUser.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
+		sysUser.setPassword(passwordService.encryptPassword(DEFAULT_PASSWORD));
 		return sysUserRepository.save(sysUser);
 	}
 
@@ -103,7 +109,7 @@ public class SysUserServiceImpl implements SysUserService {
 	@Override
 	public SysUser changeSysUserPassword(String id, String newPassword) {
 		SysUser sysUser = sysUserRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		sysUser.setPassword(passwordEncoder.encode(newPassword));
+		sysUser.setPassword(passwordService.encryptPassword(newPassword));
 		return sysUserRepository.save(sysUser);
 	}
 }

@@ -1,28 +1,23 @@
 package com.w2.springtemplate.config;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordMatcher;
-import com.w2.springtemplate.framework.shiro.bcrypt.BCryptPasswordService;
-import com.w2.springtemplate.framework.shiro.cache.RedisCacheManager;
-import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
-import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
-import com.w2.springtemplate.framework.shiro.realm.BearerRealm;
-import com.w2.springtemplate.framework.shiro.realm.UserAccountRealm;
-import com.w2.springtemplate.framework.shiro.session.NoSessionWebSubjectFactory;
-import com.w2.springtemplate.utils.crypto.BCryptPasswordEncoder;
-import com.w2.springtemplate.utils.crypto.PasswordEncoder;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.*;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -39,10 +34,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.w2.springtemplate.framework.shiro.cache.RedisCacheManager;
+import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
+import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
+import com.w2.springtemplate.framework.shiro.realm.BearerRealm;
+import com.w2.springtemplate.framework.shiro.realm.UserAccountRealm;
+import com.w2.springtemplate.framework.shiro.session.NoSessionWebSubjectFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
@@ -54,20 +55,32 @@ public class ShiroConfiguration {
 	}
 
 	/// 密码加密设置
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+//	@Bean
+//	public PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
+//
+//	@Bean
+//	public PasswordService passwordService() {
+//		return new BCryptPasswordService(passwordEncoder());
+//	}
+//
+//	@Bean
+//	public CredentialsMatcher passwordMatcher() {
+//		return new BCryptPasswordMatcher(passwordService());
+//	}
+
 
 	@Bean
-	public PasswordService passwordService() {
-		return new BCryptPasswordService(passwordEncoder());
+	public PasswordService defaultPasswordService() {
+		return new DefaultPasswordService();
 	}
 
 	@Bean
 	public CredentialsMatcher passwordMatcher() {
-		return new BCryptPasswordMatcher(passwordService());
+		return new PasswordMatcher();
 	}
+
 
 	@Bean
 	CacheManager redisCacheManager() {

@@ -19,7 +19,7 @@ import com.w2.springtemplate.framework.io.fonts.FontUtils;
 import com.w2.springtemplate.framework.io.pdf.PdfBoxUtils;
 import com.w2.springtemplate.framework.oos.client.OOSClient;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
-import com.w2.springtemplate.model.service.InterfaceInfoService;
+//import com.w2.springtemplate.model.service.InterfaceInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +67,8 @@ public class TestController {
 	private OOSClient oosClient;
 
 
-	@Autowired
-	private InterfaceInfoService interfaceInfoService;
+//	@Autowired
+//	private InterfaceInfoService interfaceInfoService;
 
 	private static final String accessKey = "JZYMLZEWNAHACV6L6ILL"; // 使用EDS web界面创建的对象存储用户，此处填用户的access key
 	private static final String secretKey = "QJUeJXTIw8EdBp2UirBqP4E46VsFmcF2n6UimaZB"; // 使用EDS
@@ -475,10 +475,10 @@ public class TestController {
 	}
 
 
-	@GetMapping(value = "/testTransaction")
-	public void testTransaction(){
-		interfaceInfoService.test1();
-		interfaceInfoService.test2();
-	}
+//	@GetMapping(value = "/testTransaction")
+//	public void testTransaction(){
+//		interfaceInfoService.test1();
+//		interfaceInfoService.test2();
+//	}
 
 }
