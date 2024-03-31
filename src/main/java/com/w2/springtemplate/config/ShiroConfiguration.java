@@ -149,6 +149,8 @@ public class ShiroConfiguration {
 		userAccountRealm.setCredentialsMatcher(passwordMatcher());
 		userAccountRealm.setAuthenticationTokenClass(UsernamePasswordToken.class);
 		// userAccountRealm.setAuthenticationCachingEnabled(true);
+		userAccountRealm.setCachingEnabled(true);
+		userAccountRealm.setCacheManager(redisCacheManager());
 		return userAccountRealm;
 	}
 
