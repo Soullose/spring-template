@@ -48,3 +48,11 @@ spring:
 
 server:
   port: 7777
+
+flowable:
+  cmmn:
+    enabled: false
+  dmn:
+    enabled: false
+  idm:
+    enabled: false
