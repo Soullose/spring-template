@@ -14,7 +14,7 @@ public class RedisUtils {
     private static RedisTemplate<String, Object> redisTemplate;
 
 
-    public static void setRedisTemplate(RedisTemplate redisTemplate) {
+    public static void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
         RedisUtils.redisTemplate = redisTemplate;
     }
 

@@ -1,14 +1,8 @@
 package com.w2.springtemplate.framework.redis;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.w2.springtemplate.utils.crypto.RedisUtils;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Duration;
+
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.checkerframework.checker.units.qual.K;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -26,7 +19,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.time.Duration;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.w2.springtemplate.utils.crypto.RedisUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Order(value = 1)
@@ -65,7 +65,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    RedisTemplate<K, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         ObjectMapper om = new ObjectMapper();
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer
                 = new Jackson2JsonRedisSerializer<>(Object.class);
@@ -73,7 +73,7 @@ public class RedisConfiguration {
         om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance,
                 ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_ARRAY);
         jackson2JsonRedisSerializer.setObjectMapper(om);
-        RedisTemplate<K, Object> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(StringRedisSerializer.UTF_8);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
@@ -85,7 +85,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory){
+    public RedisCacheManager cacheManager(LettuceConnectionFactory redisConnectionFactory){
         return RedisCacheManager.create(redisConnectionFactory);
     }
 
