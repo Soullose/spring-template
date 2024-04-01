@@ -17,8 +17,8 @@ public class JwtUtil {
 
 	private static final String SECRET_KET = "502B614D71315565304F482B414D64526151665144326535656A6778313372537941543063655A734B30633D";
 
-	// 有效期
-	public static final Long JWT_TTL = 60 * 60 * 1000L; // 60 * 60 * 1000l一个小时
+	// 有效期 7天
+	public static final Long JWT_TTL = 60 * 60 * 24 * 7 * 1000L; // 60 * 60 * 1000l一个小时
 	// 设置密码明文
 	public static final String JWT_KEY = "OPEN";
 
