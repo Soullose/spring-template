@@ -19,7 +19,9 @@ import org.apache.shiro.web.util.WebUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.w2.springtemplate.framework.handlers.login.LoggedInUser;
 import com.w2.springtemplate.framework.shiro.jwt.JwtUtil;
+import com.w2.springtemplate.utils.crypto.RedisUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -102,9 +104,10 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
         httpResponse.setHeader(AUTHORIZATION_HEADER, BEARER + StringUtils.SPACE + jwt);
         httpResponse.setStatus(HttpServletResponse.SC_OK);
 
+        log.info("subject:{}", objectMapper.convertValue(subject.getPrincipal(), LoggedInUser.class));
 //        Claims claims1 = JwtUtil.parseJWT(jwt);
-//        log.info("claims1:{}", claims1);
-//        RedisUtils.set("logged:"+claims1.getId(), claims1, 60);
+        log.info("jwt:{}", jwt);
+        RedisUtils.set("logged:"+jwt, claims, 60);
         return true;
     }
 
