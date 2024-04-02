@@ -1,17 +1,17 @@
 package com.w2.springtemplate.framework.shiro.jwt;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.crypto.SecretKey;
+
 import com.google.common.collect.ImmutableMap;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
 
 public class JwtUtil {
 
@@ -73,8 +73,7 @@ public class JwtUtil {
 	 * @return
 	 */
 	public static SecretKey generalKey() {
-		byte[] encodedKey = Base64.getDecoder().decode(SECRET_KET);
-		return new SecretKeySpec(encodedKey, 0, encodedKey.length, "HmacSHA256");
+		return Jwts.SIG.HS256.key().build();
 	}
 
 	/**
