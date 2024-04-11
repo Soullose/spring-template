@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.w2.springtemplate.utils.crypto.RedisUtils;
 
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Order(value = 1)
 @Configuration
-@EnableConfigurationProperties({RedisProperties.class})
+@EnableConfigurationProperties({ RedisProperties.class })
 public class RedisConfiguration {
 
 	private final RedisProperties redisProperties;
@@ -71,6 +72,7 @@ public class RedisConfiguration {
 		om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
 		om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL,
 				JsonTypeInfo.As.WRAPPER_ARRAY);
+		om.registerModule(new JavaTimeModule());
 		jackson2JsonRedisSerializer.setObjectMapper(om);
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory);

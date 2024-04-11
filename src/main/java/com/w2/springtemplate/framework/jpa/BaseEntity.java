@@ -1,6 +1,15 @@
 package com.w2.springtemplate.framework.jpa;
 
-import lombok.Data;
+import java.time.LocalDateTime;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -8,8 +17,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Data;
 
 @Data
 @EntityListeners(AuditingEntityListener.class)
@@ -23,8 +33,7 @@ public class BaseEntity {
     @Access(AccessType.PROPERTY)
     private String id;
 
-
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @CreatedDate
     @Column(name = "created_at_")
     private LocalDateTime createdAt;
@@ -33,6 +42,7 @@ public class BaseEntity {
     @Column(name = "create_user_id_")
     private String createUserId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @LastModifiedDate
     @Column(name = "updated_at_")
     private LocalDateTime updatedAt;
@@ -41,13 +51,12 @@ public class BaseEntity {
     @Column(name = "update_user_id_")
     private String updateUserId;
 
-
-//    @Column(name = "create_user_name_")
-//    private String createUserName;
-//
-//    @PrePersist
-//    public void currentLoggedInName(){
-//        createUserName = new CurrentLoggedInName().getName();
-//    }
+    // @Column(name = "create_user_name_")
+    // private String createUserName;
+    //
+    // @PrePersist
+    // public void currentLoggedInName(){
+    // createUserName = new CurrentLoggedInName().getName();
+    // }
 
 }

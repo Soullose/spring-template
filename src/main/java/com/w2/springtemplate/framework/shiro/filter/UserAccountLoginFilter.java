@@ -106,8 +106,10 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
 		log.info("subject:{}", objectMapper.convertValue(subject.getPrincipal(), LoggedInUser.class));
 		// Claims claims1 = JwtUtil.parseJWT(jwt);
 		log.info("jwt:{}", jwt);
-		RedisUtils.set("logged:refreshToken:" + claims.get("id"),
-				JwtUtil.createJWT(claims.get("username").toString(), claims), 604800);
+		if (!RedisUtils.hasKey("logged:refreshToken:" + claims.get("id"))) {
+			RedisUtils.set("logged:refreshToken:" + claims.get("id"),
+					JwtUtil.createJWT(claims.get("username").toString(), claims), 604800);
+		}
 		return true;
 	}
 

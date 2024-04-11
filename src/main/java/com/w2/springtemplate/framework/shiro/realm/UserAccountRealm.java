@@ -1,17 +1,24 @@
 package com.w2.springtemplate.framework.shiro.realm;
 
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
 import com.w2.springtemplate.framework.handlers.login.LoggedInUser;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
+import com.w2.springtemplate.utils.crypto.RedisUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,12 +28,14 @@ public class UserAccountRealm extends AuthorizingRealm {
 	@Autowired
 	private SysUserRepository repository;
 
-//	public UserAccountRealm() {
-//	};
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-//	public UserAccountRealm(SysUserRepository repository) {
-//		this.repository = repository;
-//	};
+	// public UserAccountRealm() {
+	// };
+
+	// public UserAccountRealm(SysUserRepository repository) {
+	// this.repository = repository;
+	// };
 
 	/**
 	 * 授权
@@ -57,6 +66,11 @@ public class UserAccountRealm extends AuthorizingRealm {
 		BeanUtils.copyProperties(sysUser, loggedInUser);
 		loggedInUser.setHost(upToken.getHost());
 		log.info("loggedInUser:{}", loggedInUser.toMap());
+		if (RedisUtils.hasKey("system:cache:userinfo:" + sysUser.getId())) {
+
+		} else {
+			RedisUtils.set("system:cache:userinfo:" + sysUser.getId(), sysUser, 3600);
+		}
 		return new SimpleAuthenticationInfo(loggedInUser, password, getName());
 	}
 
