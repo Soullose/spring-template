@@ -117,6 +117,8 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
 	protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request,
 			ServletResponse response) {
 		log.error("onLoginFailure");
+
+		log.error("onLoginFailure:{}", e.getMessage());
 		WebUtils.toHttp(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 		return false;

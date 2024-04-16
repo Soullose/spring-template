@@ -11,13 +11,15 @@ import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.mgt.*;
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionStorageEvaluator;
+import org.apache.shiro.mgt.SubjectDAO;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -26,7 +28,6 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.config.ShiroFilterConfiguration;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -38,6 +39,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.w2.springtemplate.framework.shiro.cache.RedisCacheManager;
+import com.w2.springtemplate.framework.shiro.extention.RetryPasswordCredentialsMatcher;
 import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
 import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
 import com.w2.springtemplate.framework.shiro.realm.BearerRealm;
@@ -56,32 +58,35 @@ public class ShiroConfiguration {
 	}
 
 	/// 密码加密设置
-//	@Bean
-//	public PasswordEncoder passwordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
-//
-//	@Bean
-//	public PasswordService passwordService() {
-//		return new BCryptPasswordService(passwordEncoder());
-//	}
-//
-//	@Bean
-//	public CredentialsMatcher passwordMatcher() {
-//		return new BCryptPasswordMatcher(passwordService());
-//	}
-
+	// @Bean
+	// public PasswordEncoder passwordEncoder() {
+	// return new BCryptPasswordEncoder();
+	// }
+	//
+	// @Bean
+	// public PasswordService passwordService() {
+	// return new BCryptPasswordService(passwordEncoder());
+	// }
+	//
+	// @Bean
+	// public CredentialsMatcher passwordMatcher() {
+	// return new BCryptPasswordMatcher(passwordService());
+	// }
 
 	@Bean
 	public PasswordService defaultPasswordService() {
 		return new DefaultPasswordService();
 	}
 
+	// @Bean
+	// public CredentialsMatcher passwordMatcher() {
+	// return new PasswordMatcher();
+	// }
+
 	@Bean
 	public CredentialsMatcher passwordMatcher() {
-		return new PasswordMatcher();
+		return new RetryPasswordCredentialsMatcher();
 	}
-
 
 	@Bean
 	CacheManager redisCacheManager() {

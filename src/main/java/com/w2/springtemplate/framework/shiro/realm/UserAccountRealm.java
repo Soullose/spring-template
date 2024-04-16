@@ -18,7 +18,6 @@ import com.w2.springtemplate.framework.handlers.login.LoggedInUser;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
-import com.w2.springtemplate.utils.crypto.RedisUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,11 +65,11 @@ public class UserAccountRealm extends AuthorizingRealm {
 		BeanUtils.copyProperties(sysUser, loggedInUser);
 		loggedInUser.setHost(upToken.getHost());
 		log.info("loggedInUser:{}", loggedInUser.toMap());
-		if (RedisUtils.hasKey("system:cache:userinfo:" + sysUser.getId())) {
+		// if (RedisUtils.hasKey("system:cache:userinfo:" + sysUser.getId())) {
 
-		} else {
-			RedisUtils.set("system:cache:userinfo:" + sysUser.getId(), sysUser, 3600);
-		}
+		// } else {
+		// RedisUtils.set("system:cache:userinfo:" + sysUser.getId(), sysUser, 3600);
+		// }
 		return new SimpleAuthenticationInfo(loggedInUser, password, getName());
 	}
 
