@@ -13,7 +13,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
-import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -38,6 +37,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.w2.springtemplate.framework.shiro.authc.MultipleRealmAuthentic;
 import com.w2.springtemplate.framework.shiro.cache.RedisCacheManager;
 import com.w2.springtemplate.framework.shiro.extention.RetryPasswordCredentialsMatcher;
 import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
@@ -169,17 +169,18 @@ public class ShiroConfiguration {
 
 	@Bean
 	Authenticator multipleRealmAuthentic(Realm bearerRealm, Realm userAccountRealm) {
-		// MultipleRealmAuthentic multipleRealmAuthentic = new MultipleRealmAuthentic();
-		// multipleRealmAuthentic.setRealms(Arrays.asList(bearerRealm,
-		// userAccountRealm));
-		// return multipleRealmAuthentic;
+		MultipleRealmAuthentic multipleRealmAuthentic = new MultipleRealmAuthentic();
+		multipleRealmAuthentic.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
+		multipleRealmAuthentic.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+		return multipleRealmAuthentic;
 
-		ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator(); // MultiRealmAuthenticator
+		// ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator(); //
+		// MultiRealmAuthenticator
 		// 设置两个Realm，一个用于用户登录验证和访问权限获取；一个用于jwt token的认证
-		authenticator.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
+		// authenticator.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
 		// 设置多个realm认证策略，一个成功即跳过其它的
-		authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
-		return authenticator;
+		// authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+		// return authenticator;
 	}
 
 	@Bean
