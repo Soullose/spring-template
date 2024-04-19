@@ -123,11 +123,21 @@ public class UserAccountLoginFilter extends AuthenticatingFilter {
 
 		log.error("onLoginFailure:{}", e.getMessage());
 		if (e instanceof LockedAccountException) {
+			log.error("LockedAccountException");
 			try {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getLocalizedMessage());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		}
+		if (e instanceof AuthenticationException) {
+			log.error("AuthenticationException", e.getLocalizedMessage());
+			// try {
+			// httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+			// e.getLocalizedMessage());
+			// } catch (IOException e1) {
+			// e1.printStackTrace();
+			// }
 		}
 		httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

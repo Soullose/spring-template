@@ -2,6 +2,7 @@ package com.w2.springtemplate.framework.shiro.extention;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.LockedAccountException;
@@ -49,7 +50,9 @@ public class RetryPasswordCredentialsMatcher extends PasswordMatcher {
         }
         boolean match = super.doCredentialsMatch(token, info);
         if (!match) {
+            log.info("用户 {} 密码校验失败", username);
             counter.getAndIncrement();
+            throw new AuthenticationException("用户名或密码错误");
         }
         return match;
     }
