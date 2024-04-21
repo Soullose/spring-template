@@ -27,8 +27,11 @@ import lombok.Data;
 public class BaseEntity {
 
     @Id
-    @GenericGenerator(name = "NanoidGenerator", strategy = "com.w2.springtemplate.framework.jpa.NanoidGenerator")
-    @GeneratedValue(generator = "NanoidGenerator")
+    // @GenericGenerator(name = "NanoidGenerator", strategy =
+    // "com.w2.springtemplate.framework.jpa.NanoidGenerator")
+    // @GeneratedValue(generator = "NanoidGenerator")
+    @GenericGenerator(name = "SnowflakeGenerator", strategy = "com.w2.springtemplate.framework.jpa.SnowflakeGenerator")
+    @GeneratedValue(generator = "SnowflakeGenerator")
     @Column(name = "id_")
     @Access(AccessType.PROPERTY)
     private String id;
