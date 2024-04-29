@@ -1,6 +1,15 @@
 package com.w2.springtemplate.framework.netty.study.server;
 
+import java.net.InetSocketAddress;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.w2.springtemplate.framework.netty.study.server.handler.W2NettyServerHandlerInitializer;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -9,12 +18,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.net.InetSocketAddress;
 
 @Slf4j
 @Component
@@ -50,8 +53,7 @@ public class W2NettyServer {
 				.option(ChannelOption.SO_BACKLOG, 1024) // 服务端 accept 队列的大小
 				.childOption(ChannelOption.SO_KEEPALIVE, true) // TCP Keepalive 机制，实现 TCP 层级的心跳保活功能
 				.childOption(ChannelOption.TCP_NODELAY, true) // 允许较小的数据包的发送，降低延迟
-                .childHandler(nettyServerHandlerInitializer)
-		;
+				.childHandler(nettyServerHandlerInitializer);
 		// 绑定端口，并同步等待成功，即启动服务端
 		ChannelFuture future = bootstrap.bind().sync();
 		if (future.isSuccess()) {
@@ -69,5 +71,6 @@ public class W2NettyServer {
 		// 优雅关闭两个 EventLoopGroup 对象
 		bossGroup.shutdownGracefully();
 		workerGroup.shutdownGracefully();
+		log.debug("[shutDown][Netty Server 端口 {} 关闭]", PORT);
 	}
 }
