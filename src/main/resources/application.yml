@@ -1,6 +1,9 @@
 spring:
   application:
     name: spring-template
+  profiles:
+    active:
+      - workflow
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
@@ -29,12 +32,14 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
         user_sql_comments: true
+  liquibase:
+    enabled: false
   redis:
     host: 127.0.0.1
     port: 19528
     password: Cr4gs54ZXKJoVFYBV5J
     database: 0
-    timeout:  6000
+    timeout: 6000
     lettuce:
       pool:
         enabled: true
@@ -45,14 +50,5 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 
-
 server:
   port: 7777
-
-flowable:
-  cmmn:
-    enabled: false
-  dmn:
-    enabled: false
-  idm:
-    enabled: false
