@@ -1,5 +1,8 @@
 package com.w2.springtemplate.framework.workflow.config;
 
+import java.util.List;
+
+import org.flowable.common.engine.api.delegate.event.FlowableEventListener;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.ProcessEngineConfiguration;
@@ -15,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
+import com.google.common.collect.Lists;
 import com.w2.springtemplate.framework.workflow.config.processor.FlowableProcessor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +40,25 @@ public class FlowableConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "w2.flowable.processor", name = "enabled", havingValue = "true", matchIfMissing = false)
     public ProcessEngine processEngine() {
-        return ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
-                .setJdbcDriver(flowableProcessor.getDriverClassName())
-                .setJdbcUrl(flowableProcessor.getUrl()).setJdbcUsername(flowableProcessor.getUsername())
-                .setJdbcPassword(flowableProcessor.getPassword())
-                .setDatabaseType(ProcessEngineConfiguration.DATABASE_TYPE_MYSQL)
-                .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
-                .buildProcessEngine();
+        List<FlowableEventListener> eventListeners = Lists.newArrayList();
+        ProcessEngineConfiguration processEngineConfiguration = ProcessEngineConfiguration
+                .createStandaloneProcessEngineConfiguration();
+        processEngineConfiguration.setJdbcDriver(flowableProcessor.getDriverClassName());
+        processEngineConfiguration.setJdbcUrl(flowableProcessor.getUrl())
+                .setJdbcUsername(flowableProcessor.getUsername());
+        processEngineConfiguration.setJdbcPassword(flowableProcessor.getPassword());
+        processEngineConfiguration.setDatabaseType(ProcessEngineConfiguration.DATABASE_TYPE_MYSQL);
+        processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+        processEngineConfiguration.setEventListeners(eventListeners);
+        return processEngineConfiguration.buildProcessEngine();
+        // return
+        // ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration()
+        // .setJdbcDriver(flowableProcessor.getDriverClassName())
+        // .setJdbcUrl(flowableProcessor.getUrl()).setJdbcUsername(flowableProcessor.getUsername())
+        // .setJdbcPassword(flowableProcessor.getPassword())
+        // .setDatabaseType(ProcessEngineConfiguration.DATABASE_TYPE_MYSQL)
+        // .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
+        // .buildProcessEngine();
     }
 
     /**
