@@ -15,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 public class W2NettyServerHandler extends ChannelInboundHandlerAdapter {
 
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        super.channelRead(ctx, msg);
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         // 从管理器中添加
