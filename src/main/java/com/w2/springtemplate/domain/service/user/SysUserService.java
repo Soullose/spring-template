@@ -1,5 +1,6 @@
-package com.w2.springtemplate.domain.model.user;
+package com.w2.springtemplate.domain.service.user;
 
+import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
 import com.w2.springtemplate.infrastructure.entities.SysUser;

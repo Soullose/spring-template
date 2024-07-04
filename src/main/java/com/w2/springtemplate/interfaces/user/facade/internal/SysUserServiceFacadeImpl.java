@@ -1,6 +1,6 @@
 package com.w2.springtemplate.interfaces.user.facade.internal;
 
-import com.w2.springtemplate.domain.model.user.SysUserService;
+import com.w2.springtemplate.domain.service.user.SysUserService;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
 import com.w2.springtemplate.interfaces.user.facade.SysUserServiceFacade;
 

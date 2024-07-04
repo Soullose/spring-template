@@ -3,7 +3,7 @@ package com.w2.springtemplate.command.user.handler;
 import org.apache.shiro.authc.credential.PasswordService;
 
 import com.w2.springtemplate.command.user.CheckPasswordCommand;
-import com.w2.springtemplate.domain.model.user.SysUserService;
+import com.w2.springtemplate.domain.service.user.SysUserService;
 import com.w2.springtemplate.framework.command.CommandHandler;
 import com.w2.springtemplate.framework.command.annontation.CommandHandlerAnnotation;
 import com.w2.springtemplate.infrastructure.entities.SysUser;

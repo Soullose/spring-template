@@ -1,8 +1,10 @@
-package com.w2.springtemplate.domain.model.user;
+package com.w2.springtemplate.infrastructure.serviceImpl.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
+import com.w2.springtemplate.domain.service.user.SysUserService;
 import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
@@ -90,7 +92,7 @@ public class SysUserServiceImpl implements SysUserService {
 	/**
 	 * 查询所有用户
 	 * 
-	 * @return {@link List<User>}
+	 * @return {@link List< User >}
 	 */
 	@Override
 	public List<User> findAllUser() {
