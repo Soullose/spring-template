@@ -18,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 public class W2NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
-    }
+//    @Override
+//    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+//        super.channelRead(ctx, msg);
+//    }
 
     /**
      * 建立连接时，发送一条消息
