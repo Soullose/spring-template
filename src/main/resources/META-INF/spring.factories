@@ -4,3 +4,6 @@
 
 
 org.springframework.context.ApplicationContextInitializer=com.w2.springtemplate.framework.vfs.ApacheVfsApplicationContextInitializer
+
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.w2.springtemplate.framework.netty.study.server.W2NettyServer

@@ -1,17 +1,17 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.time.LocalDate;
 
-@Getter
-@Setter
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import lombok.Data;
+
+@Data
 @Table(name = "t_sys_user")
 @Entity
 public class SysUser extends BaseEntity implements Serializable {
@@ -23,7 +23,7 @@ public class SysUser extends BaseEntity implements Serializable {
 	@Column(name = "password_")
 	private String password;
 
-	///姓名
+	/// 姓名
 	@Column(name = "name_")
 	private String name;
 
@@ -34,7 +34,6 @@ public class SysUser extends BaseEntity implements Serializable {
 	/// 证件类型
 	@Column(name = "id_card_type_")
 	private String idCardType;
-
 
 	/// 邮箱
 	@Column(name = "email_")

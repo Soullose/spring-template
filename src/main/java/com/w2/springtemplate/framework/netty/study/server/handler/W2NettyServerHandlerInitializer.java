@@ -1,18 +1,19 @@
 package com.w2.springtemplate.framework.netty.study.server.handler;
 
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.w2.springtemplate.framework.netty.study.common.dispatcher.MessageDispatcher;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class W2NettyServerHandlerInitializer extends ChannelInitializer<Channel> {
-
 
     /**
      * 心跳超时时间
@@ -34,13 +35,12 @@ public class W2NettyServerHandlerInitializer extends ChannelInitializer<Channel>
                 // 空闲检测
                 .addLast(new ReadTimeoutHandler(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS))
                 // 编码器
-//                .addLast(new InvocationEncoder())
+                // .addLast(new InvocationEncoder())
                 // 解码器
-//                .addLast(new InvocationDecoder())
+                // .addLast(new InvocationDecoder())
                 // 消息分发器
-                .addLast(messageDispatcher)
+                .addLast("messageDispatcher", messageDispatcher)
                 // 服务端处理器
-                .addLast(nettyServerHandler)
-        ;
+                .addLast("nettyServerHandler", nettyServerHandler);
     }
 }

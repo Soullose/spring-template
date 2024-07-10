@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import com.w2.springtemplate.framework.netty.study.server.handler.W2NettyServerHandlerInitializer;
 
@@ -20,7 +20,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+@Configuration
 public class W2NettyServer {
 
 	/// 端口号
@@ -55,7 +55,7 @@ public class W2NettyServer {
 				.childOption(ChannelOption.TCP_NODELAY, true) // 允许较小的数据包的发送，降低延迟
 				.childHandler(nettyServerHandlerInitializer);
 		// 绑定端口，并同步等待成功，即启动服务端
-		ChannelFuture future = bootstrap.bind().sync();
+		ChannelFuture future = bootstrap.bind(PORT).sync();
 		if (future.isSuccess()) {
 			channel = future.channel();
 			log.debug("[start][Netty Server 启动在 {} 端口]", PORT);
