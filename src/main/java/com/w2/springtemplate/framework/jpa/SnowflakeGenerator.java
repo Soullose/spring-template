@@ -6,15 +6,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
-import cn.hutool.core.util.IdUtil;
+//import cn.hutool.core.util.IdUtil;
 
-/// 基于Hutool的雪花算法实现
+/// 基于neural 的雪花算法实现
 public class SnowflakeGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
 
-        return IdUtil.getSnowflakeNextIdStr();
+//        return IdUtil.getSnowflakeNextIdStr();
+        return SnowflakeIdGenerator.getInstance().nextIdStr();
     }
 
 }
