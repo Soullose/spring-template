@@ -1,7 +1,5 @@
 package com.w2.springtemplate.framework.jpa;
 
-import cn.hutool.core.util.IdUtil;
-
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.concurrent.ThreadLocalRandom;
@@ -106,7 +104,7 @@ public class SnowflakeIdGenerator {
 	}
 
 	public SnowflakeIdGenerator() {
-		this(IdUtil.getDataCenterId(MAX_DATA_CENTER_ID));
+		this(getDatacenterId(MAX_DATA_CENTER_ID));
 	}
 
 	public SnowflakeIdGenerator(long dataCenterId) {
@@ -270,7 +268,6 @@ public class SnowflakeIdGenerator {
 
 		return LAST_IP;
 	}
-
 
 	protected static long getDatacenterId(long maxDatacenterId) {
 		long id = 0L;
