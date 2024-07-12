@@ -1,14 +1,10 @@
 package com.w2.springtemplate.framework.jpa;
 
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.util.concurrent.ThreadLocalRandom;
-
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
-
 import cn.hutool.core.util.IdUtil;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 基于Twitter的Snowflake算法实现分布式高效有序ID生产黑科技(sequence)——升级版Snowflake
@@ -47,7 +43,7 @@ import cn.hutool.core.util.IdUtil;
  * @version 3.0
  * @link https://gitee.com/yu120/sequence
  */
-public class SnowflakeIdGenerator{
+public class SnowflakeIdGenerator {
 
 	/**
 	 * 起始时间戳
@@ -124,11 +120,16 @@ public class SnowflakeIdGenerator{
 	/**
 	 * 基于Snowflake创建分布式ID生成器
 	 *
-	 * @param dataCenterId   数据中心ID,数据范围为0~255
-	 * @param workerId       工作机器ID,数据范围为0~3
-	 * @param clock          true表示解决高并发下获取时间戳的性能问题
-	 * @param timeOffset     允许时间回拨的毫秒量,建议5ms
-	 * @param randomSequence true表示使用毫秒内的随机序列(超过范围则取余)
+	 * @param dataCenterId
+	 *            数据中心ID,数据范围为0~255
+	 * @param workerId
+	 *            工作机器ID,数据范围为0~3
+	 * @param clock
+	 *            true表示解决高并发下获取时间戳的性能问题
+	 * @param timeOffset
+	 *            允许时间回拨的毫秒量,建议5ms
+	 * @param randomSequence
+	 *            true表示使用毫秒内的随机序列(超过范围则取余)
 	 */
 	public SnowflakeIdGenerator(long dataCenterId, long workerId, boolean clock, long timeOffset,
 			boolean randomSequence) {
@@ -224,7 +225,8 @@ public class SnowflakeIdGenerator{
 	/**
 	 * 保证返回的毫秒数在参数之后(阻塞到下一个毫秒，直到获得新的时间戳)——CAS
 	 *
-	 * @param lastTimestamp last timestamp
+	 * @param lastTimestamp
+	 *            last timestamp
 	 * @return next millis
 	 */
 	private long tilNextMillis(long lastTimestamp) {
@@ -267,5 +269,25 @@ public class SnowflakeIdGenerator{
 		}
 
 		return LAST_IP;
+	}
+
+
+	protected static long getDatacenterId(long maxDatacenterId) {
+		long id = 0L;
+		try {
+			InetAddress ip = InetAddress.getLocalHost();
+			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+			if (network == null) {
+				id = 1L;
+			} else {
+				byte[] mac = network.getHardwareAddress();
+				id = ((0x000000FF & (long) mac[mac.length - 1])
+						| (0x0000FF00 & (((long) mac[mac.length - 2]) << 8))) >> 6;
+				id = id % (maxDatacenterId + 1);
+			}
+		} catch (Exception e) {
+			System.out.println(" getDatacenterId: " + e.getMessage());
+		}
+		return id;
 	}
 }
