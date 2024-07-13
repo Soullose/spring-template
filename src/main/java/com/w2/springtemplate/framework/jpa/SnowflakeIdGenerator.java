@@ -1,5 +1,8 @@
 package com.w2.springtemplate.framework.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.concurrent.ThreadLocalRandom;
@@ -42,6 +45,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * @link https://gitee.com/yu120/sequence
  */
 public class SnowflakeIdGenerator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SnowflakeIdGenerator.class);
 
 	/**
 	 * 起始时间戳
@@ -273,6 +278,7 @@ public class SnowflakeIdGenerator {
 		long id = 0L;
 		try {
 			InetAddress ip = InetAddress.getLocalHost();
+			LOG.debug("localHost:{}", ip);
 			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
 			if (network == null) {
 				id = 1L;
