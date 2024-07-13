@@ -1,17 +1,17 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import java.io.Serializable;
-import java.time.LocalDate;
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-
-import lombok.Data;
+import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "t_sys_user")
 @Entity
 public class SysUser extends BaseEntity implements Serializable {
