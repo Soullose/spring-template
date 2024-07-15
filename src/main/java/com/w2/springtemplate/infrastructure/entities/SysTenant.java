@@ -6,4 +6,5 @@ import lombok.Data;
 
 @Data
 public class SysTenant implements Serializable {
+	private static final long serialVersionUID = 8499363370547484369L;
 }

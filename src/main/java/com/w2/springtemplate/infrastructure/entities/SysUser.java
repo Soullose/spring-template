@@ -1,20 +1,22 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
+
+import javax.persistence.*;
+
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "t_sys_user")
 @Entity
 public class SysUser extends BaseEntity implements Serializable {
+	private static final long serialVersionUID = 4220958672909825116L;
 	/// 登录账户,唯一.
 	@Column(name = "user_name_", unique = true)
 	private String username;
@@ -50,4 +52,8 @@ public class SysUser extends BaseEntity implements Serializable {
 	/// 生日
 	@Column(name = "birthday_")
 	private LocalDate birthday;
+
+	@ManyToMany(mappedBy = "sysUsers")
+	@JoinColumn(name = "role_id_", referencedColumnName = "id_",nullable = false)
+	private Set<SysRole> roles;
 }
