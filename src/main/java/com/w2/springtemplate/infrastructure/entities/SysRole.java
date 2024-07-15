@@ -1,14 +1,13 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import java.io.Serializable;
-import java.util.Set;
-
-import javax.persistence.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -29,7 +28,9 @@ public class SysRole extends BaseEntity implements Serializable {
 	@Column(name = "remark_")
 	private String remark;
 
+	@JsonIgnore
 	@ManyToMany
-	@JoinColumn(name = "user_id_", referencedColumnName = "id_",nullable = false)
-	private Set<SysUser> sysUsers;
+	@JoinTable(name = "t_user_role", joinColumns = { @JoinColumn(name = "role_id_") }, inverseJoinColumns = {
+			@JoinColumn(name = "user_id_") })
+	private Set<SysUser> users;
 }

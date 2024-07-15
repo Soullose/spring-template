@@ -1,15 +1,13 @@
 package com.w2.springtemplate.infrastructure.entities;
 
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
-
-import javax.persistence.*;
-
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -53,7 +51,9 @@ public class SysUser extends BaseEntity implements Serializable {
 	@Column(name = "birthday_")
 	private LocalDate birthday;
 
-	@ManyToMany(mappedBy = "sysUsers")
-	@JoinColumn(name = "role_id_", referencedColumnName = "id_",nullable = false)
+
+	@ManyToMany
+	@JoinTable(name = "t_user_role", joinColumns = { @JoinColumn(name = "user_id_") }, inverseJoinColumns = {
+			@JoinColumn(name = "role_id_") })
 	private Set<SysRole> roles;
 }
