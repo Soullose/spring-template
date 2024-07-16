@@ -1,22 +1,19 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.Table;
 
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Entity(name = "t_tenant")
-@Table(appliesTo = "t_tenant", comment = "租户表")
+@Entity(name = "t_sys_tenant")
+@Table(appliesTo = "t_sys_tenant", comment = "租户表")
 public class SysTenant extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 8499363370547484369L;
 

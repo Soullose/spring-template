@@ -56,4 +56,9 @@ public class SysUser extends BaseEntity implements Serializable {
 	@JoinTable(name = "t_user_role", joinColumns = { @JoinColumn(name = "user_id_") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id_") })
 	private Set<SysRole> roles;
+
+
+	@ManyToOne
+	@JoinColumn(name = "tenant_id_")
+	private SysTenant tenant;
 }
