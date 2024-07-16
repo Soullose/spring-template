@@ -1,14 +1,15 @@
 package com.w2.springtemplate.infrastructure.entities;
 
+import com.google.common.collect.Sets;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -34,4 +35,9 @@ public class SysPermission extends BaseEntity implements Serializable {
 	@Comment("备注")
 	@Column(name = "remark_")
 	private String remark;
+
+	@ManyToMany
+	@JoinTable(name = "t_role_permission", joinColumns = {@JoinColumn(name = "permission_id_")}, inverseJoinColumns = {
+			@JoinColumn(name = "role_id_")})
+	private Set<SysRole> roles = Sets.newHashSet();
 }

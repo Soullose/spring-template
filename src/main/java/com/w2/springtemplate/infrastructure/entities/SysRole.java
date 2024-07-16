@@ -1,9 +1,11 @@
 package com.w2.springtemplate.infrastructure.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Sets;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Table;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,8 +13,8 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "t_sys_role")
-@Entity
+@Entity(name = "t_sys_role")
+@Table(appliesTo = "t_sys_role", comment = "角色表")
 public class SysRole extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 4015033813412866557L;
@@ -30,7 +32,13 @@ public class SysRole extends BaseEntity implements Serializable {
 
 	@JsonIgnore
 	@ManyToMany
-	@JoinTable(name = "t_user_role", joinColumns = { @JoinColumn(name = "role_id_") }, inverseJoinColumns = {
-			@JoinColumn(name = "user_id_") })
-	private Set<SysUser> users;
+	@JoinTable(name = "t_user_role", joinColumns = {@JoinColumn(name = "role_id_")}, inverseJoinColumns = {
+			@JoinColumn(name = "user_id_")})
+	private Set<SysUser> users = Sets.newHashSet();
+
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "t_role_permission", joinColumns = {@JoinColumn(name = "role_id_")}, inverseJoinColumns = {
+			@JoinColumn(name = "permission_id_")})
+	private Set<SysPermission> permissions = Sets.newHashSet();
 }

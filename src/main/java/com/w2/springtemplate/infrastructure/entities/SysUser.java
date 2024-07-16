@@ -1,5 +1,6 @@
 package com.w2.springtemplate.infrastructure.entities;
 
+import com.google.common.collect.Sets;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -51,12 +52,10 @@ public class SysUser extends BaseEntity implements Serializable {
 	@Column(name = "birthday_")
 	private LocalDate birthday;
 
-
 	@ManyToMany
-	@JoinTable(name = "t_user_role", joinColumns = { @JoinColumn(name = "user_id_") }, inverseJoinColumns = {
-			@JoinColumn(name = "role_id_") })
-	private Set<SysRole> roles;
-
+	@JoinTable(name = "t_user_role", joinColumns = {@JoinColumn(name = "user_id_")}, inverseJoinColumns = {
+			@JoinColumn(name = "role_id_")})
+	private Set<SysRole> roles = Sets.newHashSet();
 
 	@ManyToOne
 	@JoinColumn(name = "tenant_id_")
