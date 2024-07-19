@@ -1,17 +1,5 @@
 package com.w2.springtemplate.framework.vfs;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.VFS;
-import org.apache.commons.vfs2.provider.DelegateFileObject;
-import org.apache.commons.vfs2.provider.local.LocalFile;
-import org.springframework.core.io.AbstractResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.VfsResource;
-import org.springframework.core.io.WritableResource;
-import org.springframework.util.ReflectionUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +9,23 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 
-@Slf4j
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.provider.DelegateFileObject;
+import org.apache.commons.vfs2.provider.local.LocalFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.VfsResource;
+import org.springframework.core.io.WritableResource;
+import org.springframework.util.ReflectionUtils;
+
+
 public class ApacheVfsResource extends AbstractResource implements WritableResource {
+
+	private final static Logger log = LoggerFactory.getLogger(ApacheVfsResource.class);
 
 	private static final Method METHOD_GET_LOCAL_FILE = ReflectionUtils.findMethod(LocalFile.class, "getLocalFile");
 	private static final Method METHOD_DO_ATTACH = ReflectionUtils.findMethod(LocalFile.class, "doAttach");
@@ -35,7 +38,7 @@ public class ApacheVfsResource extends AbstractResource implements WritableResou
 	private FileObject fileObject;
 
 	public ApacheVfsResource(String location) {
-		log.debug("ApacheVfsResource:{}",location);
+		log.debug("ApacheVfsResource:{}", location);
 		try {
 			this.fileObject = VFS.getManager().getBaseFile().resolveFile(location);
 		} catch (FileSystemException e) {
