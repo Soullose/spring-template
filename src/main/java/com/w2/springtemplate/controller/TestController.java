@@ -11,6 +11,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.w2.springtemplate.domain.service.userGroup.SysUserGroupService;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Cipher;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4CipherPool;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Mode;
@@ -20,6 +21,7 @@ import com.w2.springtemplate.framework.io.pdf.PdfBoxUtils;
 import com.w2.springtemplate.framework.oos.client.OOSClient;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
 //import com.w2.springtemplate.model.service.InterfaceInfoService;
+import com.w2.springtemplate.infrastructure.entities.SysUserGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +77,18 @@ public class TestController {
 	// web界面创建的对象存储用户，此处填用户的secret
 	// key
 	private static final String endPoint = "https://oss-beijing.sangforcloud.com:12000"; // EDS对象存储的地址:对象存储服务的端口号
+
+	@Autowired
+	private SysUserGroupService sysUserGroupService;
+
+
+	@ApiOperation(value = "测试QueryFactory")
+	@GetMapping("/testQueryFactory")
+	public void testQueryFactory() {
+		sysUserGroupService.createSysUserGroup(new SysUserGroup());
+	}
+
+
 
 	@GetMapping("/testUpload")
 	public String testUpload(@RequestParam String bucketName) {

@@ -10,5 +10,4 @@ public interface BaseJpaRepository<T, ID> extends JpaRepositoryImplementation<T,
 
 //    private final EntityManager entityManager;
 
-
 }

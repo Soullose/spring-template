@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -52,10 +53,17 @@ public class SysUser extends BaseEntity implements Serializable {
 	@Column(name = "birthday_")
 	private LocalDate birthday;
 
+	/// 关联角色多对多
 	@ManyToMany
 	@JoinTable(name = "t_user_role", joinColumns = {@JoinColumn(name = "user_id_")}, inverseJoinColumns = {
 			@JoinColumn(name = "role_id_")})
 	private Set<SysRole> roles = Sets.newHashSet();
+
+	/// 关联用户组多对一
+	@ManyToOne
+	@JoinColumn(name = "user_group_id_")
+	@Comment("用户组id")
+	private SysUserGroup sysUserGroup;
 
 	@ManyToOne
 	@JoinColumn(name = "tenant_id_")
