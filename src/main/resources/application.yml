@@ -8,9 +8,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/w2-api
+    url: jdbc:mysql://124.70.32.167:33306/w2-api
     username: root
-    password: root
+    password: 123456789
     hikari:
       minimum-idle: 5
       idle-timeout: 600000
@@ -36,7 +36,7 @@ spring:
     enabled: false
   redis:
     host: 127.0.0.1
-    port: 19528
+    port: 6379
     password: Cr4gs54ZXKJoVFYBV5J
     database: 0
     timeout: 6000
@@ -51,4 +51,4 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
 
 server:
-  port: 7777
+  port: 8888

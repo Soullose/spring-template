@@ -1,9 +1,8 @@
 package com.w2.springtemplate.controller.test;
 
-import java.util.List;
-
-import com.w2.springtemplate.demo.WCErrorException;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author wsfzj 2024/9/2
@@ -29,10 +28,10 @@ public class WCIdentityResultOrg {
 //    }
 
 	/// 错误异常
-//    @Data
-//    public static class ErrorException {
-//        private String name;
-//        private String message;
-//        private String trace;
-//    }
+    @Data
+    public static class WCErrorException {
+        private String name;
+        private String message;
+        private String trace;
+    }
 }

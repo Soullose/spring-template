@@ -3,6 +3,6 @@ w2:
     processor:
       enabled: true
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/study_flowable?autoReconnect=true&nullCatalogMeansCurrent=true
+      url: jdbc:mysql://124.70.32.167:33306/study_flowable?autoReconnect=true&nullCatalogMeansCurrent=true
       username: root
-      password: root
+      password: 123456789
