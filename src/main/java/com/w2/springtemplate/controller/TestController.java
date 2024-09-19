@@ -11,6 +11,10 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
+import com.w2.springtemplate.controller.test.WCOrgData;
 import com.w2.springtemplate.domain.service.userGroup.SysUserGroupService;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Cipher;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4CipherPool;
@@ -50,6 +54,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Api(tags = "测试接口")
 @RestController
@@ -68,7 +74,6 @@ public class TestController {
 	@Qualifier(value = "sfOOSClient")
 	private OOSClient oosClient;
 
-
 //	@Autowired
 //	private InterfaceInfoService interfaceInfoService;
 
@@ -81,14 +86,11 @@ public class TestController {
 	@Autowired
 	private SysUserGroupService sysUserGroupService;
 
-
 	@ApiOperation(value = "测试QueryFactory")
 	@GetMapping("/testQueryFactory")
 	public void testQueryFactory() {
 		sysUserGroupService.createSysUserGroup(new SysUserGroup());
 	}
-
-
 
 	@GetMapping("/testUpload")
 	public String testUpload(@RequestParam String bucketName) {
@@ -383,20 +385,53 @@ public class TestController {
 	@ApiOperation(value = "获取文件内容基于Apache-VFS")
 	@GetMapping("/getFile")
 	public ResponseEntity<Object> readVfsFile() {
-		Resource resource = resourceLoader.getResource("vfs://cccccc/ttttt.text");
-		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/ttttt.text");
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+		Resource resource = resourceLoader.getResource("vfs://cccccc/org.json");
+		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/org.json");
 
 		List lines = null;
+		List<WCOrgData> wcIdentityResultOrgData = null;
 		try {
 			File file = apacheVfsResource.getFile();
+			String json = FileUtils.readFileToString(file, "UTF-8");
+			WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
+//			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
+			wcIdentityResultOrgData = wcIdentityResultOrg.getData();
+			Set<String> orgLeves = wcIdentityResultOrgData.stream().map(WCOrgData::getOrgLeve)
+					.collect(Collectors.toSet());
+			log.error("orgLeves:{}", orgLeves);
+
+			for (String leve : orgLeves) {
+				List<WCOrgData> collect = wcIdentityResultOrgData.stream().filter(wcOrgData -> leve.equals(wcOrgData.getOrgLeve())).collect(Collectors.toList());
+
+				for (WCOrgData wcOrgData : collect) {
+					String bid = wcOrgData.get_BID();
+					String organizationId = wcOrgData.getOrganizationId();
+					String parentId = wcOrgData.getParentId();
+					String code = wcOrgData.getCode();
+					String name = wcOrgData.getName();
+					String orgLeve = wcOrgData.getOrgLeve();
+					boolean disabled = wcOrgData.isDisabled();
+					log.debug("{}:{}:{}:{}:{}:{}:{}", bid, organizationId,parentId,code,convertToChinese(name),orgLeve,disabled);
+
+					if (parentId != null) {
+						WCOrgData wcOrgData2 = wcIdentityResultOrgData.stream().filter(wcOrgData1 -> parentId.equals(wcOrgData1.getOrganizationId())).findFirst().orElse(null);
+						if (wcOrgData2 != null) {
+							String bid1 = wcOrgData2.get_BID();
+							log.error("{}", bid1);
+						}
+					}
+				}
+			}
+
 			lines = FileUtils.readLines(file, "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return ResponseEntity.ok(lines);
+		return ResponseEntity.ok(wcIdentityResultOrgData);
 	}
 
-	public static final byte[] SRC_DATA_16B = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
+	public static final byte[] SRC_DATA_16B = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8 };
 
 	@ApiOperation(value = "测试SM4")
 	@GetMapping("/testSM4")
@@ -411,22 +446,24 @@ public class TestController {
 			SecretKeySpec sm4Key = new SecretKeySpec(key, SM4Mode.SM4_CBC_PKCS7Padding.getName());
 			byte[] iv = "ilovegolangjava.".getBytes();
 			SM4Util instance = new SM4Util();
-			//解密校验
-			String cryptText = "6c24d235d11a8c1428546ab114500225"; //2d529a9f0042384350311823e3bc11fde5cf93a25b035cda82baf56ccf1f306c   8781d981f7ffd6c1a780f8b213f596aa535c8bb6389923f8329f79a1707966e2 6c24d235d11a8c1428546ab114500225
+			// 解密校验
+			String cryptText = "6c24d235d11a8c1428546ab114500225"; // 2d529a9f0042384350311823e3bc11fde5cf93a25b035cda82baf56ccf1f306c
+																	// 8781d981f7ffd6c1a780f8b213f596aa535c8bb6389923f8329f79a1707966e2
+																	// 6c24d235d11a8c1428546ab114500225
 
-			log.debug("1:{}",Hex.decode(cryptText));
-			log.debug("2:{}",ByteUtils.fromHexString(cryptText));
+			log.debug("1:{}", Hex.decode(cryptText));
+			log.debug("2:{}", ByteUtils.fromHexString(cryptText));
 			byte[] b = instance.decrypt(cipher, Hex.decode(cryptText), sm4Key, iv);
 			log.debug("I am encrypted by golang SM4.{}", new String(b));
 
-			//加密校验，SM4加密以下明文以供Go SM4进行解密验证
+			// 加密校验，SM4加密以下明文以供Go SM4进行解密验证
 			byte[] msg = "你好!".getBytes();
 			byte[] cryptData = instance.encrypt(cipher, msg, sm4Key, iv);
 			String cryptStr = Hex.toHexString(cryptData);
 
 			log.debug(cryptStr);
 
-			log.debug("hex:{}",Hex.toHexString(cryptData));
+			log.debug("hex:{}", Hex.toHexString(cryptData));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -441,26 +478,27 @@ public class TestController {
 		InputStream miFontL3TTF = fontUtils.getMIFontL3TTF();
 		File miFontL3TTFFile = fontUtils.getMIFontL3TTFFile();
 		InputStream miFontTTF = fontUtils.getMIFontTTF();
-		log.debug("{}",miFontL3TTF != null);
-		log.debug("{}",miFontL3TTFFile != null);
+		log.debug("{}", miFontL3TTF != null);
+		log.debug("{}", miFontL3TTFFile != null);
 		TTFParser ttfParser = new TTFParser();
 		TrueTypeFont trueTypeFont = ttfParser.parseEmbedded(miFontTTF);
 		Integer marginX = 50;
 		Integer marginY = 50;
 		PDRectangle a4 = PDRectangle.A4;
 		PDDocument document = new PDDocument();
-		PDType0Font font = PDType0Font.load(document,trueTypeFont,true);
+		PDType0Font font = PDType0Font.load(document, trueTypeFont, true);
 		PDPage pdPage = new PDPage(a4);
 		document.addPage(pdPage);
 		PDPageContentStream contentStream = new PDPageContentStream(document, pdPage);
 
-		PdfBoxUtils.beginTextSteam(contentStream, 20f, marginX.floatValue(), a4.getHeight()-(2*marginY));
+		PdfBoxUtils.beginTextSteam(contentStream, 20f, marginX.floatValue(), a4.getHeight() - (2 * marginY));
 		// 书写信息
 		PdfBoxUtils.drawParagraph(contentStream, "物流单摘要", font, 18);
 		PdfBoxUtils.createEmptyParagraph(contentStream, 2);
 
 		contentStream.setFont(font, 13);
-		PdfBoxUtils.drawParagraph(contentStream, "物流单号：\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a02022099");
+		PdfBoxUtils.drawParagraph(contentStream,
+				"物流单号：\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a02022099");
 		PdfBoxUtils.drawParagraph(contentStream, "结算时间段：\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0从20200909到20200807");
 		PdfBoxUtils.drawParagraph(contentStream, "商品总数量(件)：\u00a0100000");
 		PdfBoxUtils.drawParagraph(contentStream, "商品总价格(元)：\u00a0100000000000");
@@ -485,14 +523,113 @@ public class TestController {
 		// 贴图
 		document.save(new FileOutputStream(new File("D:\\dev\\IdeaProjects\\spring-template\\test2.pdf")));
 		document.close();
-		return  ResponseEntity.ok().build();
+		return ResponseEntity.ok().build();
 	}
-
 
 //	@GetMapping(value = "/testTransaction")
 //	public void testTransaction(){
 //		interfaceInfoService.test1();
 //		interfaceInfoService.test2();
 //	}
+
+
+
+		public static String convertToChinese(String input) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < input.length(); i++) {
+				char c = input.charAt(i);
+				switch (c) {
+					case '[':
+						sb.append("【");
+						break;
+					case ']':
+						sb.append("】");
+						break;
+					case '~':
+						sb.append("～");
+						break;
+					case '`':
+						sb.append("｀");
+						break;
+					case '!':
+						sb.append("！");
+						break;
+					case '@':
+						sb.append("＠");
+						break;
+					case '#':
+						sb.append("＃");
+						break;
+					case '$':
+						sb.append("＄");
+						break;
+					case '%':
+						sb.append("％");
+						break;
+					case '^':
+						sb.append("︿");
+						break;
+					case '&':
+						sb.append("＆");
+						break;
+					case '*':
+						sb.append("＊");
+						break;
+					case '(':
+						sb.append("（");
+						break;
+					case ')':
+						sb.append("）");
+						break;
+					case '+':
+						sb.append("＋");
+						break;
+					case '=':
+						sb.append("＝");
+						break;
+					case '|':
+						sb.append("｜");
+						break;
+					case '{':
+						sb.append("｛");
+						break;
+					case '}':
+						sb.append("｝");
+						break;
+					case ':':
+						sb.append("：");
+						break;
+					case ';':
+						sb.append("；");
+						break;
+					case '\'':
+						sb.append("＇");
+						break;
+					case '"':
+						sb.append("“");
+						break;
+					case '\\':
+						sb.append("＼");
+						break;
+					case '/':
+						sb.append("／");
+						break;
+					case '?':
+						sb.append("？");
+						break;
+					case '<':
+						sb.append("《");
+						break;
+					case '>':
+						sb.append("》");
+						break;
+					default:
+						sb.append(c);
+						break;
+				}
+			}
+			return sb.toString();
+		}
+
 
 }

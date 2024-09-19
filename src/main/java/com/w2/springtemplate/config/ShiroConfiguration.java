@@ -145,6 +145,7 @@ public class ShiroConfiguration {
 		filterChainDefinitionMap.put("/user/register", "anon");
 		filterChainDefinitionMap.put("/api/**", "jwt");
 		filterChainDefinitionMap.put("/test/**", "anon");
+		filterChainDefinitionMap.put("/bim-server/**", "anon");
 		filterChainDefinitionMap.put("/**", "anon");
 		return filterChainDefinitionMap;
 	}
