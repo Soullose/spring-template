@@ -38,6 +38,16 @@ public class BimServerController {
 	}
 
 
+    @ApiOperation(value = "测试武船身份治理系统退出接口")
+    @PostMapping(value = "/api/rest/integration/ExtApiIngtAuthService/logout")
+    public ResponseEntity<BimLogoutRestParams> testLogout(@RequestBody BimLogoutParams params) {
+        log.debug("params: {}", params);
+        BimLogoutRestParams bimLogoutRestParams = BimLogoutRestParams.builder().success(true)
+                .data(true).build();
+        return ResponseEntity.ok(bimLogoutRestParams);
+    }
+
+
 	@ApiOperation(value = "测试武船身份治理系统组织数量接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/countBy")
 	public ResponseEntity<BimCountRestParams> testOrgCountWC(@RequestBody BimCountParams params) {
