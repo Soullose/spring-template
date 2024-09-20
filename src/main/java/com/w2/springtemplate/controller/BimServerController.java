@@ -59,7 +59,7 @@ public class BimServerController {
 
 
 
-	@ApiOperation(value = "测试武船身份治理系统用户数量接口")
+	@ApiOperation(value = "测试武船身份治理系统用户查询接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/countBy")
 	public ResponseEntity<BimCountRestParams> testUserCountWC(@RequestBody BimCountParams params) {
 		log.debug("bimOrgCountParams: {}", params);
@@ -69,7 +69,7 @@ public class BimServerController {
 	}
 
 
-	@ApiOperation(value = "测试武船身份治理系统用户数量接口")
+	@ApiOperation(value = "测试武船身份治理系统组织查询接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/findBy")
 	public ResponseEntity<WCIdentityResultOrg> testOrgFindByWC(@RequestBody BimFindByParams params) {
 		log.debug("bimFindByParams: {}", params);
