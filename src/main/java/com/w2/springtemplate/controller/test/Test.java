@@ -300,4 +300,9 @@ public final class Test {
             "        \"trace\": null\n" +
             "    }\n" +
             "}";
+
+    public static void main(String[] args) {
+        int remainder = 2480 % 500;
+        System.out.println(remainder);
+    }
 }

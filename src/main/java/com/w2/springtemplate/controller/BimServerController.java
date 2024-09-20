@@ -2,10 +2,11 @@ package com.w2.springtemplate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.w2.springtemplate.controller.test.*;
-import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author wsfzj 2024/9/18
@@ -81,55 +75,53 @@ public class BimServerController {
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/findBy")
 	public ResponseEntity<WCIdentityResultOrg> testOrgFindByWC(@RequestBody BimFindByParams params) {
 		log.debug("bimFindByParams: {}", params);
-		Type listType = new TypeToken<List<WCOrgData>>() {
-		}.getType();
-		String json = gson.toJson(this.org(), listType);
+		String json = Test.org;
 		WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
-		return ResponseEntity.ok(wcIdentityResultOrg);
+		return ResponseEntity.ok(this.org());
 	}
 
 	@ApiOperation(value = "测试武船身份治理系统用户数量接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/findBy")
 	public ResponseEntity<WCIdentityResultUser> testUserFindByWC(@RequestBody BimFindByParams params) {
 		log.debug("bimFindByParams: {}", params);
-		Type listType = new TypeToken<List<WCUserData>>() {
-		}.getType();
-		String json = gson.toJson(this.user(), listType);
+		String json = Test.user;
 		WCIdentityResultUser wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultUser.class);
-		return ResponseEntity.ok(wcIdentityResultOrg);
+		return ResponseEntity.ok(this.user());
 	}
 
-	private List<WCOrgData> org() {
+	private WCIdentityResultOrg org() {
 
 		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/org.json");
 
 		List<WCOrgData> wcIdentityResultOrgData = null;
-		try {
+        WCIdentityResultOrg wcIdentityResultOrg = null;
+        try {
 			File file = apacheVfsResource.getFile();
 			String json = FileUtils.readFileToString(file, "UTF-8");
-			WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
+			wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
 //			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
 			wcIdentityResultOrgData = wcIdentityResultOrg.getData();
 		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return wcIdentityResultOrgData;
+            log.error("exception message", e);
+        }
+		return wcIdentityResultOrg;
 	}
 
-	private List<WCUserData> user() {
+	private WCIdentityResultUser user() {
 
 		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/user.json");
 
 		List<WCUserData> wcIdentityResultUserData = null;
-		try {
+        WCIdentityResultUser wcIdentityResultUser = null;
+        try {
 			File file = apacheVfsResource.getFile();
 			String json = FileUtils.readFileToString(file, "UTF-8");
-			WCIdentityResultUser wcIdentityResultUser = gson.fromJson(json, WCIdentityResultUser.class);
+			wcIdentityResultUser = gson.fromJson(json, WCIdentityResultUser.class);
 //			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
 			wcIdentityResultUserData = wcIdentityResultUser.getData();
 		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return wcIdentityResultUserData;
+            log.error("exception message", e);
+        }
+		return wcIdentityResultUser;
 	}
 }
