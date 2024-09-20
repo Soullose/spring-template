@@ -2,8 +2,12 @@ package com.w2.springtemplate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.w2.springtemplate.controller.test.*;
 import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
+import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
+import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author wsfzj 2024/9/18
@@ -25,6 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/bim-server")
 @Slf4j
 public class BimServerController {
+	private final ResourceLoader resourceLoader;
+
+	public BimServerController(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
 
 	Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
@@ -37,55 +53,83 @@ public class BimServerController {
 		return ResponseEntity.ok(bimLoginRestParams);
 	}
 
-
-    @ApiOperation(value = "测试武船身份治理系统退出接口")
-    @PostMapping(value = "/api/rest/integration/ExtApiIngtAuthService/logout")
-    public ResponseEntity<BimLogoutRestParams> testLogout(@RequestBody BimLogoutParams params) {
-        log.debug("params: {}", params);
-        BimLogoutRestParams bimLogoutRestParams = BimLogoutRestParams.builder().success(true)
-                .data(true).build();
-        return ResponseEntity.ok(bimLogoutRestParams);
-    }
-
+	@ApiOperation(value = "测试武船身份治理系统退出接口")
+	@PostMapping(value = "/api/rest/integration/ExtApiIngtAuthService/logout")
+	public ResponseEntity<BimLogoutRestParams> testLogout(@RequestBody BimLogoutParams params) {
+		log.debug("params: {}", params);
+		BimLogoutRestParams bimLogoutRestParams = BimLogoutRestParams.builder().success(true).data(true).build();
+		return ResponseEntity.ok(bimLogoutRestParams);
+	}
 
 	@ApiOperation(value = "测试武船身份治理系统组织数量接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/countBy")
 	public ResponseEntity<BimCountRestParams> testOrgCountWC(@RequestBody BimCountParams params) {
 		log.debug("bimOrgCountParams: {}", params);
-		BimCountRestParams bimOrgCountRestParams = BimCountRestParams.builder().success(true)
-				.data(2480).build();
+		BimCountRestParams bimOrgCountRestParams = BimCountRestParams.builder().success(true).data(2480).build();
 		return ResponseEntity.ok(bimOrgCountRestParams);
 	}
-
-
 
 	@ApiOperation(value = "测试武船身份治理系统用户查询接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/countBy")
 	public ResponseEntity<BimCountRestParams> testUserCountWC(@RequestBody BimCountParams params) {
 		log.debug("bimOrgCountParams: {}", params);
-		BimCountRestParams bimUserCountRestParams = BimCountRestParams.builder().success(true)
-				.data(2480).build();
+		BimCountRestParams bimUserCountRestParams = BimCountRestParams.builder().success(true).data(2480).build();
 		return ResponseEntity.ok(bimUserCountRestParams);
 	}
-
 
 	@ApiOperation(value = "测试武船身份治理系统组织查询接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/findBy")
 	public ResponseEntity<WCIdentityResultOrg> testOrgFindByWC(@RequestBody BimFindByParams params) {
 		log.debug("bimFindByParams: {}", params);
-		String json = Test.org;
+		Type listType = new TypeToken<List<WCOrgData>>() {
+		}.getType();
+		String json = gson.toJson(this.org(), listType);
 		WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
 		return ResponseEntity.ok(wcIdentityResultOrg);
 	}
-
-
 
 	@ApiOperation(value = "测试武船身份治理系统用户数量接口")
 	@PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/findBy")
 	public ResponseEntity<WCIdentityResultUser> testUserFindByWC(@RequestBody BimFindByParams params) {
 		log.debug("bimFindByParams: {}", params);
-		String json = Test.user;
+		Type listType = new TypeToken<List<WCUserData>>() {
+		}.getType();
+		String json = gson.toJson(this.user(), listType);
 		WCIdentityResultUser wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultUser.class);
 		return ResponseEntity.ok(wcIdentityResultOrg);
+	}
+
+	private List<WCOrgData> org() {
+
+		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/org.json");
+
+		List<WCOrgData> wcIdentityResultOrgData = null;
+		try {
+			File file = apacheVfsResource.getFile();
+			String json = FileUtils.readFileToString(file, "UTF-8");
+			WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
+//			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
+			wcIdentityResultOrgData = wcIdentityResultOrg.getData();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return wcIdentityResultOrgData;
+	}
+
+	private List<WCUserData> user() {
+
+		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/user.json");
+
+		List<WCUserData> wcIdentityResultUserData = null;
+		try {
+			File file = apacheVfsResource.getFile();
+			String json = FileUtils.readFileToString(file, "UTF-8");
+			WCIdentityResultUser wcIdentityResultUser = gson.fromJson(json, WCIdentityResultUser.class);
+//			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
+			wcIdentityResultUserData = wcIdentityResultUser.getData();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return wcIdentityResultUserData;
 	}
 }
