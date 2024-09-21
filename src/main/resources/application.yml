@@ -51,4 +51,4 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
 
 server:
-  port: 8888
+  port: 19999

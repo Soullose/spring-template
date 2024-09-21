@@ -1,5 +1,6 @@
 package com.w2.springtemplate.controller.test;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 public class WCIdentityResultOrg {
 	private boolean success;
-	private List<WCOrgData> data;
+	private List<WCOrgData> data = Lists.newArrayList();
 	private String errorCode;
 	private String errorName;
 	private String errorMessage;
