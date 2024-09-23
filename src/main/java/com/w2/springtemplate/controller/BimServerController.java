@@ -87,7 +87,7 @@ public class BimServerController {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok(this.org());
+        return ResponseEntity.ok(wcIdentityResultOrg);
     }
 
     @ApiOperation(value = "测试武船身份治理系统用户数量接口")
@@ -96,7 +96,7 @@ public class BimServerController {
         log.debug("bimFindByParams: {}", params);
         String json = Test.user;
         WCIdentityResultUser wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultUser.class);
-        return ResponseEntity.ok(this.user());
+        return ResponseEntity.ok(wcIdentityResultOrg);
     }
 
     private WCIdentityResultOrg org() {
