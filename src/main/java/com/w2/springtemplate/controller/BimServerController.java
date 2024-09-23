@@ -63,7 +63,7 @@ public class BimServerController {
     @PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/countBy")
     public ResponseEntity<BimCountRestParams> testOrgCountWC(@RequestBody BimCountParams params) {
         log.debug("bimOrgCountParams: {}", params);
-        BimCountRestParams bimOrgCountRestParams = BimCountRestParams.builder().success(true).data(2480).build();
+        BimCountRestParams bimOrgCountRestParams = BimCountRestParams.builder().success(true).data(500).build();
         return ResponseEntity.ok(bimOrgCountRestParams);
     }
 
@@ -71,7 +71,7 @@ public class BimServerController {
     @PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/countBy")
     public ResponseEntity<BimCountRestParams> testUserCountWC(@RequestBody BimCountParams params) {
         log.debug("bimOrgCountParams: {}", params);
-        BimCountRestParams bimUserCountRestParams = BimCountRestParams.builder().success(true).data(2480).build();
+        BimCountRestParams bimUserCountRestParams = BimCountRestParams.builder().success(true).data(500).build();
         return ResponseEntity.ok(bimUserCountRestParams);
     }
 
