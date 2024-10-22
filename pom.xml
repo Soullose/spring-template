@@ -18,6 +18,9 @@
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <jjwt.version>0.12.6</jjwt.version>
+		<guava.version>33.3.0-jre</guava.version>
+		<apache.commons-io.version>2.17.0</apache.commons-io.version>
+		<apache.shiro.version>2.0.1</apache.shiro.version>
 	</properties>
 	<dependencies>
 
@@ -117,7 +120,7 @@
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-spring-boot-web-starter</artifactId>
-			<version>2.0.1</version>
+			<version>${apache.shiro.version}</version>
 		</dependency>
 
 
@@ -270,7 +273,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>33.3.0-jre</version>
+			<version>${guava.version}</version>
 		</dependency>
 
 		<!--        JWT-->
@@ -303,7 +306,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.15.1</version>
+			<version>${apache.commons-io.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-vfs2 -->
