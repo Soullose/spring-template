@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.infrastructure.entities.SysUserRole;
+import com.w2.springtemplate.infrastructure.entities.SysUserRoleId;
 
 /**
  * @apiNote 用户角色表
@@ -11,5 +12,5 @@ import com.w2.springtemplate.infrastructure.entities.SysUserRole;
  * @version 1.0
  */
 @Repository
-public interface SysUserRoleRepository extends BaseJpaRepository<SysUserRole, String> {
+public interface SysUserRoleRepository extends BaseJpaRepository<SysUserRole, SysUserRoleId> {
 }
