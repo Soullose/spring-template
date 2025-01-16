@@ -2,7 +2,6 @@ package com.w2.springtemplate.framework.event.guava;
 
 import java.util.Map;
 
-import com.google.common.eventbus.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +35,12 @@ public class W2EventBusProvider implements ApplicationListener<ContextRefreshedE
 		listeners.clear();
 		String[] listenerNames = beanFactory.getBeanNamesForType(W2Listener.class);
 		for (String listenerName : listenerNames) {
-//			BeanDefinition = beanFactory.getBeanDefinition(listenerName);
+			// BeanDefinition = beanFactory.getBeanDefinition(listenerName);
 			try {
 				W2Listener listener = beanFactory.getBean(listenerName, W2Listener.class);
 				listeners.put(listener.getClass(), listenerName);
-//				EventBus eventBus = new EventBus();
-//				eventBus.register(listener);
+				// EventBus eventBus = new EventBus();
+				// eventBus.register(listener);
 				EventBusFactory.register(listener);
 			} catch (Exception e) {
 				throw new RuntimeException(e);

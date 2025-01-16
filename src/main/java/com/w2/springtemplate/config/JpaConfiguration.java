@@ -1,6 +1,7 @@
 package com.w2.springtemplate.config;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import javax.persistence.EntityManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManager;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Configuration
 @EnableJpaAuditing()
@@ -18,6 +19,7 @@ public class JpaConfiguration {
 
     @Bean
     public JPAQueryFactory queryFactory(EntityManager em) {
+        log.debug("创建JPAQueryFactory");
         return new JPAQueryFactory(em);
     }
 }
