@@ -1,14 +1,9 @@
 package com.w2.springtemplate.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.w2.springtemplate.controller.test.*;
-import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +12,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.w2.springtemplate.controller.test.BimCountParams;
+import com.w2.springtemplate.controller.test.BimCountRestParams;
+import com.w2.springtemplate.controller.test.BimFindByParams;
+import com.w2.springtemplate.controller.test.BimLoginParams;
+import com.w2.springtemplate.controller.test.BimLoginRestParams;
+import com.w2.springtemplate.controller.test.BimLogoutParams;
+import com.w2.springtemplate.controller.test.BimLogoutRestParams;
+import com.w2.springtemplate.controller.test.Test;
+import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
+import com.w2.springtemplate.controller.test.WCIdentityResultUser;
+import com.w2.springtemplate.controller.test.WCOrgData;
+import com.w2.springtemplate.controller.test.WCUserData;
+import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author wsfzj 2024/9/18
@@ -83,7 +96,8 @@ public class BimServerController {
         WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
         try {
             WCIdentityResultOrg wcIdentityResultOrg1 = objectMapper.readValue(json, WCIdentityResultOrg.class);
-            log.debug("wcIdentityResultOrg1: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg1));
+            log.debug("wcIdentityResultOrg1: {}",
+                    objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg1));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -99,6 +113,7 @@ public class BimServerController {
         return ResponseEntity.ok(wcIdentityResultOrg);
     }
 
+    @SuppressWarnings("unused")
     private WCIdentityResultOrg org() {
 
         ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/org.json");
@@ -109,7 +124,8 @@ public class BimServerController {
             File file = apacheVfsResource.getFile();
             String json = FileUtils.readFileToString(file, "UTF-8");
             wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
-//			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
+            // log.error("武船和身份治理系统组织同步成功2:{}",
+            // objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
             wcIdentityResultOrgData = wcIdentityResultOrg.getData();
         } catch (IOException e) {
             log.error("exception message", e);
@@ -117,6 +133,7 @@ public class BimServerController {
         return wcIdentityResultOrg;
     }
 
+    @SuppressWarnings("unused")
     private WCIdentityResultUser user() {
 
         ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/user.json");
@@ -127,7 +144,8 @@ public class BimServerController {
             File file = apacheVfsResource.getFile();
             String json = FileUtils.readFileToString(file, "UTF-8");
             wcIdentityResultUser = gson.fromJson(json, WCIdentityResultUser.class);
-//			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
+            // log.error("武船和身份治理系统组织同步成功2:{}",
+            // objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
             wcIdentityResultUserData = wcIdentityResultUser.getData();
         } catch (IOException e) {
             log.error("exception message", e);

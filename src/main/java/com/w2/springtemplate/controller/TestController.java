@@ -1,5 +1,38 @@
 package com.w2.springtemplate.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.fontbox.ttf.TTFParser;
+import org.apache.fontbox.ttf.TrueTypeFont;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.bouncycastle.pqc.legacy.math.linearalgebra.ByteUtils;
+import org.bouncycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
@@ -10,7 +43,17 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.AccessControlList;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.BucketPolicy;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.CreateBucketRequest;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.Grant;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.Region;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
@@ -26,36 +69,10 @@ import com.w2.springtemplate.framework.oos.client.OOSClient;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
 //import com.w2.springtemplate.model.service.InterfaceInfoService;
 import com.w2.springtemplate.infrastructure.entities.SysUserGroup;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.fontbox.ttf.TTFParser;
-import org.apache.fontbox.ttf.TrueTypeFont;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.bouncycastle.pqc.legacy.math.linearalgebra.ByteUtils;
-import org.bouncycastle.util.encoders.Hex;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
-import java.net.URL;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Api(tags = "测试接口")
 @RestController
@@ -74,8 +91,8 @@ public class TestController {
 	@Qualifier(value = "sfOOSClient")
 	private OOSClient oosClient;
 
-//	@Autowired
-//	private InterfaceInfoService interfaceInfoService;
+	// @Autowired
+	// private InterfaceInfoService interfaceInfoService;
 
 	private static final String accessKey = "JZYMLZEWNAHACV6L6ILL"; // 使用EDS web界面创建的对象存储用户，此处填用户的access key
 	private static final String secretKey = "QJUeJXTIw8EdBp2UirBqP4E46VsFmcF2n6UimaZB"; // 使用EDS
@@ -122,6 +139,7 @@ public class TestController {
 			String fileName = file.getName();
 			// 文件大小
 			Long fileSize = file.length();
+			log.debug(fileName, fileSize);
 			// 创建上传Object的Metadata
 			ObjectMetadata metadata = new ObjectMetadata();
 			// 上传的文件的长度
@@ -229,7 +247,7 @@ public class TestController {
 	}
 
 	@GetMapping("/queryAllObjects")
-	public ResponseEntity queryAllObjects(@RequestParam String bucketName) {
+	public ResponseEntity<Void> queryAllObjects(@RequestParam String bucketName) {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		ClientConfiguration clientConfig = new ClientConfiguration();
 		clientConfig.setProtocol(Protocol.HTTP);
@@ -263,7 +281,7 @@ public class TestController {
 	}
 
 	@GetMapping("/generateUrl")
-	public ResponseEntity generateUrl(@RequestParam String bucketName, @RequestParam String key) {
+	public ResponseEntity<URL> generateUrl(@RequestParam String bucketName, @RequestParam String key) {
 
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		ClientConfiguration clientConfig = new ClientConfiguration();
@@ -299,7 +317,7 @@ public class TestController {
 	}
 
 	@GetMapping("/getPolicyText")
-	public ResponseEntity getPolicyText(@RequestParam String bucketName) {
+	public ResponseEntity<String> getPolicyText(@RequestParam String bucketName) {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		ClientConfiguration clientConfig = new ClientConfiguration();
 		clientConfig.setProtocol(Protocol.HTTP);
@@ -341,7 +359,7 @@ public class TestController {
 	}
 
 	@GetMapping("/getBucketAcl")
-	public ResponseEntity getBucketAcl(@RequestParam String bucketName) {
+	public ResponseEntity<List<Grant>> getBucketAcl(@RequestParam String bucketName) {
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		ClientConfiguration clientConfig = new ClientConfiguration();
 		clientConfig.setProtocol(Protocol.HTTP);
@@ -372,7 +390,7 @@ public class TestController {
 	}
 
 	@GetMapping("/queryAllObjectsByConfig")
-	public ResponseEntity queryAllObjectsByConfig() {
+	public ResponseEntity<List<S3ObjectSummary>> queryAllObjectsByConfig() {
 		String bucketName = "md-13090440321";
 		return ResponseEntity.ok(oosClient.queryAllObjects(bucketName));
 	}
@@ -386,23 +404,25 @@ public class TestController {
 	@GetMapping("/getFile")
 	public ResponseEntity<Object> readVfsFile() {
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-		Resource resource = resourceLoader.getResource("vfs://cccccc/org.json");
+		// Resource resource = resourceLoader.getResource("vfs://cccccc/org.json");
 		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/org.json");
 
-		List lines = null;
+		List<String> lines = null;
 		List<WCOrgData> wcIdentityResultOrgData = null;
 		try {
 			File file = apacheVfsResource.getFile();
 			String json = FileUtils.readFileToString(file, "UTF-8");
 			WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
-//			log.error("武船和身份治理系统组织同步成功2:{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
+			// log.error("武船和身份治理系统组织同步成功2:{}",
+			// objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
 			wcIdentityResultOrgData = wcIdentityResultOrg.getData();
 			Set<String> orgLeves = wcIdentityResultOrgData.stream().map(WCOrgData::getOrgLeve)
 					.collect(Collectors.toSet());
 			log.error("orgLeves:{}", orgLeves);
 
 			for (String leve : orgLeves) {
-				List<WCOrgData> collect = wcIdentityResultOrgData.stream().filter(wcOrgData -> leve.equals(wcOrgData.getOrgLeve())).collect(Collectors.toList());
+				List<WCOrgData> collect = wcIdentityResultOrgData.stream()
+						.filter(wcOrgData -> leve.equals(wcOrgData.getOrgLeve())).collect(Collectors.toList());
 
 				for (WCOrgData wcOrgData : collect) {
 					String bid = wcOrgData.get_BID();
@@ -412,10 +432,13 @@ public class TestController {
 					String name = wcOrgData.getName();
 					String orgLeve = wcOrgData.getOrgLeve();
 					boolean disabled = wcOrgData.isDisabled();
-					log.debug("{}:{}:{}:{}:{}:{}:{}", bid, organizationId,parentId,code,convertToChinese(name),orgLeve,disabled);
+					log.debug("{}:{}:{}:{}:{}:{}:{}", bid, organizationId, parentId, code, convertToChinese(name),
+							orgLeve, disabled);
 
 					if (parentId != null) {
-						WCOrgData wcOrgData2 = wcIdentityResultOrgData.stream().filter(wcOrgData1 -> parentId.equals(wcOrgData1.getOrganizationId())).findFirst().orElse(null);
+						WCOrgData wcOrgData2 = wcIdentityResultOrgData.stream()
+								.filter(wcOrgData1 -> parentId.equals(wcOrgData1.getOrganizationId())).findFirst()
+								.orElse(null);
 						if (wcOrgData2 != null) {
 							String bid1 = wcOrgData2.get_BID();
 							log.error("{}", bid1);
@@ -425,6 +448,7 @@ public class TestController {
 			}
 
 			lines = FileUtils.readLines(file, "UTF-8");
+			log.debug("{}", lines);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -435,7 +459,7 @@ public class TestController {
 
 	@ApiOperation(value = "测试SM4")
 	@GetMapping("/testSM4")
-	public ResponseEntity testSM4() {
+	public ResponseEntity<Void> testSM4() {
 		SM4CipherPool sm4CipherPool = new SM4CipherPool(4);
 		SM4Cipher sm4Cipher = null;
 		try {
@@ -473,7 +497,7 @@ public class TestController {
 
 	@ApiOperation(value = "测试pdfBox")
 	@GetMapping(value = "/testPdfBox")
-	public ResponseEntity testPdfBox() throws IOException {
+	public ResponseEntity<Void> testPdfBox() throws IOException {
 		FontUtils fontUtils = new FontUtils(resourceLoader);
 		InputStream miFontL3TTF = fontUtils.getMIFontL3TTF();
 		File miFontL3TTFFile = fontUtils.getMIFontL3TTFFile();
@@ -526,110 +550,107 @@ public class TestController {
 		return ResponseEntity.ok().build();
 	}
 
-//	@GetMapping(value = "/testTransaction")
-//	public void testTransaction(){
-//		interfaceInfoService.test1();
-//		interfaceInfoService.test2();
-//	}
+	// @GetMapping(value = "/testTransaction")
+	// public void testTransaction(){
+	// interfaceInfoService.test1();
+	// interfaceInfoService.test2();
+	// }
 
-
-
-		public static String convertToChinese(String input) {
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < input.length(); i++) {
-				char c = input.charAt(i);
-				switch (c) {
-					case '[':
-						sb.append("【");
-						break;
-					case ']':
-						sb.append("】");
-						break;
-					case '~':
-						sb.append("～");
-						break;
-					case '`':
-						sb.append("｀");
-						break;
-					case '!':
-						sb.append("！");
-						break;
-					case '@':
-						sb.append("＠");
-						break;
-					case '#':
-						sb.append("＃");
-						break;
-					case '$':
-						sb.append("＄");
-						break;
-					case '%':
-						sb.append("％");
-						break;
-					case '^':
-						sb.append("︿");
-						break;
-					case '&':
-						sb.append("＆");
-						break;
-					case '*':
-						sb.append("＊");
-						break;
-					case '(':
-						sb.append("（");
-						break;
-					case ')':
-						sb.append("）");
-						break;
-					case '+':
-						sb.append("＋");
-						break;
-					case '=':
-						sb.append("＝");
-						break;
-					case '|':
-						sb.append("｜");
-						break;
-					case '{':
-						sb.append("｛");
-						break;
-					case '}':
-						sb.append("｝");
-						break;
-					case ':':
-						sb.append("：");
-						break;
-					case ';':
-						sb.append("；");
-						break;
-					case '\'':
-						sb.append("＇");
-						break;
-					case '"':
-						sb.append("“");
-						break;
-					case '\\':
-						sb.append("＼");
-						break;
-					case '/':
-						sb.append("／");
-						break;
-					case '?':
-						sb.append("？");
-						break;
-					case '<':
-						sb.append("《");
-						break;
-					case '>':
-						sb.append("》");
-						break;
-					default:
-						sb.append(c);
-						break;
-				}
+	public static String convertToChinese(String input) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < input.length(); i++) {
+			char c = input.charAt(i);
+			switch (c) {
+				case '[':
+					sb.append("【");
+					break;
+				case ']':
+					sb.append("】");
+					break;
+				case '~':
+					sb.append("～");
+					break;
+				case '`':
+					sb.append("｀");
+					break;
+				case '!':
+					sb.append("！");
+					break;
+				case '@':
+					sb.append("＠");
+					break;
+				case '#':
+					sb.append("＃");
+					break;
+				case '$':
+					sb.append("＄");
+					break;
+				case '%':
+					sb.append("％");
+					break;
+				case '^':
+					sb.append("︿");
+					break;
+				case '&':
+					sb.append("＆");
+					break;
+				case '*':
+					sb.append("＊");
+					break;
+				case '(':
+					sb.append("（");
+					break;
+				case ')':
+					sb.append("）");
+					break;
+				case '+':
+					sb.append("＋");
+					break;
+				case '=':
+					sb.append("＝");
+					break;
+				case '|':
+					sb.append("｜");
+					break;
+				case '{':
+					sb.append("｛");
+					break;
+				case '}':
+					sb.append("｝");
+					break;
+				case ':':
+					sb.append("：");
+					break;
+				case ';':
+					sb.append("；");
+					break;
+				case '\'':
+					sb.append("＇");
+					break;
+				case '"':
+					sb.append("“");
+					break;
+				case '\\':
+					sb.append("＼");
+					break;
+				case '/':
+					sb.append("／");
+					break;
+				case '?':
+					sb.append("？");
+					break;
+				case '<':
+					sb.append("《");
+					break;
+				case '>':
+					sb.append("》");
+					break;
+				default:
+					sb.append(c);
+					break;
 			}
-			return sb.toString();
 		}
-
+		return sb.toString();
+	}
 
 }

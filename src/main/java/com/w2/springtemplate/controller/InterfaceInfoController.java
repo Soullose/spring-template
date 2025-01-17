@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Lists;
-import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.repository.InterfaceInfoRepository;
 import com.w2.springtemplate.model.InterfaceInfo;
-import com.w2.springtemplate.model.QInterfaceInfo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,8 +41,8 @@ public class InterfaceInfoController {
     @ApiOperation(value = "查询所有接口数据")
     @PostMapping("/queryAll")
     public ResponseEntity<List<InterfaceInfo>> queryAll() {
-        QInterfaceInfo qInterfaceInfo = QInterfaceInfo.interfaceInfo;
-        QSysUser qSysUser = QSysUser.sysUser;
+        // QInterfaceInfo qInterfaceInfo = QInterfaceInfo.interfaceInfo;
+        // QSysUser qSysUser = QSysUser.sysUser;
         // Predicate predicate = qInterfaceInfo.createUserId==((String)qSysUser.id);
         // return ResponseEntity.ok(Lists.newArrayList(repository.findAll(predicate)));
         return ResponseEntity.ok(Lists.newArrayList(repository.findAll()));

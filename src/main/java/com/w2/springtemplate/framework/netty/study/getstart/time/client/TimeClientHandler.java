@@ -1,15 +1,15 @@
 package com.w2.springtemplate.framework.netty.study.getstart.time.client;
 
+import java.util.Date;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.util.Date;
-
 /**
  * @author wsfzj 2024/10/8
  * @version 1.0
- * @description TODO
+ * @description xxx
  */
 public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 

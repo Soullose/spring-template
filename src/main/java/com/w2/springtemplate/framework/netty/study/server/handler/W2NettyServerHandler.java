@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @ChannelHandler.Sharable
 public class W2NettyServerHandler extends ChannelInboundHandlerAdapter {
 
-
-//    @Override
-//    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        super.channelRead(ctx, msg);
-//    }
+    // @Override
+    // public void channelRead(ChannelHandlerContext ctx, Object msg) throws
+    // Exception {
+    // super.channelRead(ctx, msg);
+    // }
 
     /**
      * 建立连接时，发送一条消息
@@ -55,7 +55,6 @@ public class W2NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        // TODO Auto-generated method stub
         ByteBuf buf = (ByteBuf) msg;
         log.debug("客户端发送来的:{}", buf.toString(CharsetUtil.UTF_8));
         super.channelRead(ctx, msg);
@@ -63,7 +62,6 @@ public class W2NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        // TODO Auto-generated method stub
         super.userEventTriggered(ctx, evt);
     }
 
