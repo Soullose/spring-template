@@ -8,18 +8,20 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://124.70.32.167:33306/w2-api
+    url: jdbc:mysql://localhost:3306/w2-api?allowPublicKeyRetrieval=true
     username: root
-    password: 123456789
+    password: root
     hikari:
       minimum-idle: 5
-      idle-timeout: 600000
+      idle-timeout: 30000
       maximum-pool-size: 10
       auto-commit: true
       pool-name: w2HikariCP
       max-lifetime: 1800000
-      connection-timeout: 30000
+      connection-timeout: 20000
       connection-test-query: SELECT 1
+      validation-timeout: 3000
+      health-check-properties: {}
   jpa:
     database: mysql
     generate-ddl: true
@@ -36,7 +38,7 @@ spring:
     enabled: false
   redis:
     host: 127.0.0.1
-    port: 6379
+    port: 19528
     password: Cr4gs54ZXKJoVFYBV5J
     database: 0
     timeout: 6000
