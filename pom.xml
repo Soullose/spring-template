@@ -20,7 +20,10 @@
         <jjwt.version>0.12.6</jjwt.version>
 		<guava.version>33.3.0-jre</guava.version>
 		<apache.commons-io.version>2.17.0</apache.commons-io.version>
-		<apache.shiro.version>2.0.1</apache.shiro.version>
+		<apache.shiro.version>2.0.2</apache.shiro.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
 	</properties>
 	<dependencies>
 
@@ -272,6 +275,12 @@
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk18on</artifactId>
 			<version>1.77</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.crypto.tink/tink -->
+		<dependency>
+			<groupId>com.google.crypto.tink</groupId>
+			<artifactId>tink</artifactId>
+			<version>1.16.0</version>
 		</dependency>
 
 
