@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AutoConfigureBefore(LiquibaseAutoConfiguration.class)
 @Configuration(proxyBeanMethods = false)
-@ConfigurationProperties(prefix = "w2.flowable.processor")
+//@ConfigurationProperties(prefix = "w2.flowable.processor")
 public class FlowableConfiguration {
 
     private final FlowableProcessor flowableProcessor;

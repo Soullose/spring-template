@@ -1,12 +1,13 @@
 package com.w2.springtemplate.infrastructure.repository;
 
 import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
+import com.w2.springtemplate.framework.jpa.CustomRepository;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface SysUserRepository extends BaseJpaRepository<SysUser, String> {
+public interface SysUserRepository extends CustomRepository<SysUser, String> {
 
 	/// 注册
 //	default SysUser register(RegisterUserDTO user) {

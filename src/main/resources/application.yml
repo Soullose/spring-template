@@ -8,9 +8,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/w2-api?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:33306/w2-api?allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: 123456789
     hikari:
       minimum-idle: 5
       idle-timeout: 30000
