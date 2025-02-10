@@ -1,7 +1,16 @@
 package com.w2.springtemplate.framework.redis;
 
-import java.time.Duration;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.w2.springtemplate.framework.shiro.cache.RedisCache;
+import com.w2.springtemplate.utils.crypto.RedisUtils;
+import io.lettuce.core.api.StatefulRedisConnection;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,27 +20,13 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.w2.springtemplate.utils.crypto.RedisUtils;
-
-import io.lettuce.core.api.StatefulRedisConnection;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 // @Order(value = 1)
@@ -77,6 +72,9 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 		om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL,
 				JsonTypeInfo.As.WRAPPER_ARRAY);
 		om.registerModule(new JavaTimeModule());
+        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        om.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
 		jackson2JsonRedisSerializer.setObjectMapper(om);
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -86,20 +84,21 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.afterPropertiesSet();
 		RedisUtils.setRedisTemplate(redisTemplate);
+        RedisCache.setRedisTemplate(redisTemplate);
 		return redisTemplate;
 	}
 
-	@Bean()
-	public RedisCacheManager cacheManager(LettuceConnectionFactory redisConnectionFactory) {
-
-		RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig().serializeKeysWith(
-				RedisSerializationContext.SerializationPair.fromSerializer(StringRedisSerializer.UTF_8))
-				.serializeValuesWith(
-						RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer()))
-				.disableCachingNullValues().entryTtl(Duration.ofMinutes(60));
-		return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
-				.cacheDefaults(defaultCacheConfig).transactionAware().build();
-	}
+//	@Bean()
+//	public RedisCacheManager redisCacheManager(LettuceConnectionFactory redisConnectionFactory) {
+//
+//		RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig().serializeKeysWith(
+//				RedisSerializationContext.SerializationPair.fromSerializer(StringRedisSerializer.UTF_8))
+//				.serializeValuesWith(
+//						RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer()))
+//				.disableCachingNullValues().entryTtl(Duration.ofMinutes(60));
+//		return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
+//				.cacheDefaults(defaultCacheConfig).transactionAware().build();
+//	}
 
 	@Bean
 	@ConfigurationProperties(prefix = "spring.redis.lettuce.pool")

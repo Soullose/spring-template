@@ -3,6 +3,7 @@ package com.w2.springtemplate.config;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.querydsl.jpa.impl.JPAProvider;
 import com.w2.springtemplate.framework.jpa.CustomRepositoryFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +19,18 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 @Configuration
 @EnableJpaAuditing()
 @EnableTransactionManagement
-@EnableJpaRepositories(repositoryFactoryBeanClass = CustomRepositoryFactoryBean.class, basePackages = {
-		"com.w2.springtemplate.infrastructure.repository" })
+//@EnableJpaRepositories(repositoryFactoryBeanClass = CustomRepositoryFactoryBean.class, basePackages = {
+//		"com.w2.springtemplate.infrastructure.repository" })
 public class JpaConfiguration {
 	private static final Logger log = LoggerFactory.getLogger(JpaConfiguration.class);
 
-	@PersistenceContext
-	private EntityManager entityManager;
+//	@PersistenceContext
+//	private EntityManager entityManager;
 
 	@Bean
-	public JPAQueryFactory queryFactory() {
+	public JPAQueryFactory queryFactory(EntityManager entityManager) {
 		log.debug("创建JPAQueryFactory");
-		return new JPAQueryFactory(entityManager);
+        return new JPAQueryFactory(JPAProvider.getTemplates(entityManager),entityManager);
+//		return new JPAQueryFactory(entityManager);
 	}
 }

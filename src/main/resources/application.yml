@@ -8,7 +8,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:33306/w2-api?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/w2-api?allowPublicKeyRetrieval=true
     username: root
     password: 123456789
     hikari:
@@ -38,7 +38,7 @@ spring:
     enabled: false
   redis:
     host: 127.0.0.1
-    port: 19528
+    port: 6379
     password: Cr4gs54ZXKJoVFYBV5J
     database: 0
     timeout: 6000

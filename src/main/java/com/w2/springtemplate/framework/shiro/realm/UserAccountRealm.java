@@ -7,6 +7,8 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.lang.util.SimpleByteSource;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.BeanUtils;
@@ -59,7 +61,7 @@ public class UserAccountRealm extends AuthorizingRealm {
 		Predicate sysUserPredicate = qSysUser.username.eq(username);
 		SysUser sysUser = repository.findOne(sysUserPredicate).orElseThrow(
 				() -> new UnknownAccountException(String.format("User account not found, (username=%s)", username)));
-		log.info("sysUser:{}", sysUser);
+		log.info("sysUser-username:{}", sysUser.getUsername());
 		String password = sysUser.getPassword();
 		LoggedInUser loggedInUser = new LoggedInUser();
 		BeanUtils.copyProperties(sysUser, loggedInUser);
@@ -72,5 +74,6 @@ public class UserAccountRealm extends AuthorizingRealm {
 		// }
 		return new SimpleAuthenticationInfo(loggedInUser, password, getName());
 	}
+
 
 }

@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 
+import com.w2.springtemplate.framework.shiro.cache.ShiroRedisCacheManager;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -38,7 +39,6 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.w2.springtemplate.framework.shiro.authc.MultipleRealmAuthentic;
-import com.w2.springtemplate.framework.shiro.cache.RedisCacheManager;
 import com.w2.springtemplate.framework.shiro.extention.RetryPasswordCredentialsMatcher;
 import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
 import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
@@ -51,6 +51,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class ShiroConfiguration {
+
+
 
 	@Bean
 	LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
@@ -88,9 +90,9 @@ public class ShiroConfiguration {
 		return new RetryPasswordCredentialsMatcher();
 	}
 
-	@Bean
-	CacheManager redisCacheManager() {
-		return new RedisCacheManager();
+	@Bean(name = "shiroCacheManager")
+	CacheManager shiroCacheManager() {
+		return new ShiroRedisCacheManager();
 	}
 
 	/// 关闭shiro自带session
@@ -156,9 +158,12 @@ public class ShiroConfiguration {
 		UserAccountRealm userAccountRealm = new UserAccountRealm();
 		userAccountRealm.setCredentialsMatcher(passwordMatcher());
 		userAccountRealm.setAuthenticationTokenClass(UsernamePasswordToken.class);
-		// userAccountRealm.setAuthenticationCachingEnabled(true);
-		userAccountRealm.setCachingEnabled(true);
-		userAccountRealm.setCacheManager(redisCacheManager());
+        userAccountRealm.setCachingEnabled(true);
+        userAccountRealm.setAuthenticationCachingEnabled(true);
+        userAccountRealm.setAuthorizationCachingEnabled(true);
+        userAccountRealm.setAuthenticationCacheName("authenticationCache");
+        userAccountRealm.setAuthorizationCacheName("authorizationCache");
+		userAccountRealm.setCacheManager(shiroCacheManager());
 		return userAccountRealm;
 	}
 
@@ -189,7 +194,7 @@ public class ShiroConfiguration {
 	public DefaultWebSecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm,
 			Authenticator multipleRealmAuthentic) {
 		DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
-		manager.setCacheManager(redisCacheManager());
+		manager.setCacheManager(shiroCacheManager());
 		// manager.setSessionManager(sessionManager());
 		// manager.setSubjectDAO(defaultSubjectDAO());
 		manager.setSubjectFactory(new NoSessionWebSubjectFactory()); // 使用无状态的工厂

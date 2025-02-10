@@ -1,5 +1,6 @@
 package com.w2.springtemplate.infrastructure.serviceImpl.user;
 
+import com.querydsl.jpa.impl.JPAProvider;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
@@ -42,7 +43,7 @@ public class SysUserServiceImpl implements SysUserService {
 		this.passwordService = passwordService;
 		this.sysUserRepository = sysUserRepository;
 		this.em = em;
-		this.queryFactory = new JPAQueryFactory(em);
+		this.queryFactory = new JPAQueryFactory(JPAProvider.getTemplates(em),em);
 	}
 
 	/**

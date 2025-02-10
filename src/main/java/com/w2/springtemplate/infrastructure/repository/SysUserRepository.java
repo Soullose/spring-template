@@ -4,10 +4,11 @@ import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.framework.jpa.CustomRepository;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional(readOnly = true)
 @Repository
-public interface SysUserRepository extends CustomRepository<SysUser, String> {
+public interface SysUserRepository extends BaseJpaRepository<SysUser, String> {
 
 	/// 注册
 //	default SysUser register(RegisterUserDTO user) {

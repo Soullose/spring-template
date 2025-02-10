@@ -1,5 +1,6 @@
 package com.w2.springtemplate.infrastructure.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Sets;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
 import lombok.Data;
@@ -54,17 +55,20 @@ public class SysUser extends BaseEntity implements Serializable {
 	private LocalDate birthday;
 
 	/// 关联角色多对多
+    @JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "t_user_role", joinColumns = {@JoinColumn(name = "user_id_")}, inverseJoinColumns = {
 			@JoinColumn(name = "role_id_")})
 	private Set<SysRole> roles = Sets.newHashSet();
 
 	/// 关联用户组多对一
+    @JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "user_group_id_")
 	@Comment("用户组id")
 	private SysUserGroup sysUserGroup;
 
+    @JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "tenant_id_")
 	private SysTenant tenant;
