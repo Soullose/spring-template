@@ -53,31 +53,10 @@ public class ShiroConfiguration {
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
-
-    /// 密码加密设置
-    // @Bean
-    // public PasswordEncoder passwordEncoder() {
-    // return new BCryptPasswordEncoder();
-    // }
-    //
-    // @Bean
-    // public PasswordService passwordService() {
-    // return new BCryptPasswordService(passwordEncoder());
-    // }
-    //
-    // @Bean
-    // public CredentialsMatcher passwordMatcher() {
-    // return new BCryptPasswordMatcher(passwordService());
-    // }
     @Bean
     public PasswordService defaultPasswordService() {
         return new DefaultPasswordService();
     }
-
-    // @Bean
-    // public CredentialsMatcher passwordMatcher() {
-    // return new PasswordMatcher();
-    // }
 
     @Bean
     public CredentialsMatcher passwordMatcher() {
@@ -152,12 +131,6 @@ public class ShiroConfiguration {
         UserAccountRealm userAccountRealm = new UserAccountRealm();
         userAccountRealm.setCredentialsMatcher(passwordMatcher());
         userAccountRealm.setAuthenticationTokenClass(UsernamePasswordToken.class);
-        userAccountRealm.setCachingEnabled(true);
-        userAccountRealm.setAuthenticationCachingEnabled(true);
-        userAccountRealm.setAuthorizationCachingEnabled(true);
-        userAccountRealm.setAuthenticationCacheName("authenticationCache");
-        userAccountRealm.setAuthorizationCacheName("authorizationCache");
-        userAccountRealm.setCacheManager(shiroCacheManager());
         return userAccountRealm;
     }
 
