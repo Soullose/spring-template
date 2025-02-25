@@ -17,7 +17,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordService;
-import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.*;
@@ -53,6 +53,7 @@ public class ShiroConfiguration {
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
+
     @Bean
     public PasswordService defaultPasswordService() {
         return new DefaultPasswordService();
@@ -145,25 +146,16 @@ public class ShiroConfiguration {
     Authenticator multipleRealmAuthentic(Realm bearerRealm, Realm userAccountRealm) {
         MultipleRealmAuthentic multipleRealmAuthentic = new MultipleRealmAuthentic();
         multipleRealmAuthentic.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
-        multipleRealmAuthentic.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+//        multipleRealmAuthentic.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+        multipleRealmAuthentic.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
         return multipleRealmAuthentic;
-
-        // ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator(); //
-        // MultiRealmAuthenticator
-        // 设置两个Realm，一个用于用户登录验证和访问权限获取；一个用于jwt token的认证
-        // authenticator.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
-        // 设置多个realm认证策略，一个成功即跳过其它的
-        // authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
-        // return authenticator;
     }
 
     @Bean
-    public DefaultWebSecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm,
-                                                          Authenticator multipleRealmAuthentic) {
+    public SecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm,
+                                                Authenticator multipleRealmAuthentic) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setCacheManager(shiroCacheManager());
-        // manager.setSessionManager(sessionManager());
-        // manager.setSubjectDAO(defaultSubjectDAO());
         manager.setSubjectFactory(new NoSessionWebSubjectFactory()); // 使用无状态的工厂
         // 默认SubjectDAO会写入会话，无状态时需要通过以下代码阻止写入
         DefaultSubjectDAO subjectDAO = (DefaultSubjectDAO) manager.getSubjectDAO();
@@ -171,16 +163,13 @@ public class ShiroConfiguration {
                 .getSessionStorageEvaluator();
         sessionStorageEvaluator.setSessionStorageEnabled(false);
 
-        // 加入AccountRealm
-        // manager.setRealms(Lists.newArrayList(userAccountRealm()));
-        // 加入AccountRealm
-        manager.setRealms(Lists.newArrayList(userAccountRealm));
+        manager.setRealms(Lists.newArrayList(userAccountRealm, bearerRealm));
         manager.setAuthenticator(multipleRealmAuthentic);
         return manager;
     }
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager,
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager,
                                                          LinkedHashMap<String, Filter> filters, LinkedHashMap<String, String> filterChainDefinitionMap) {
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
