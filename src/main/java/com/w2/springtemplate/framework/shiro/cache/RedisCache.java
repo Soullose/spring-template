@@ -1,27 +1,25 @@
 package com.w2.springtemplate.framework.shiro.cache;
 
-import com.w2.springtemplate.utils.crypto.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Set;
 
+@Deprecated(forRemoval = true)
 @Slf4j
 @Component
 public class RedisCache<K, V> implements Cache<K, V> {
 
 
-
-//    @Resource
+    //    @Resource
 //    private RedisTemplate<String, Object> redisTemplate;
     private static RedisTemplate<String, Object> redisTemplate;
-//
+
+    //
 //
 //
     public static void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {

@@ -3,14 +3,12 @@ package com.w2.springtemplate.config;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.w2.springtemplate.framework.shiro.authc.MultipleRealmAuthentic;
-import com.w2.springtemplate.framework.shiro.cache.ShiroRedisCacheManager;
 import com.w2.springtemplate.framework.shiro.extention.RetryPasswordCredentialsMatcher;
 import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
 import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
 import com.w2.springtemplate.framework.shiro.realm.BearerRealm;
 import com.w2.springtemplate.framework.shiro.realm.UserAccountRealm;
 import com.w2.springtemplate.framework.shiro.session.NoSessionWebSubjectFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -18,7 +16,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.*;
 import org.apache.shiro.realm.Realm;
@@ -29,6 +26,8 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.config.ShiroFilterConfiguration;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -42,9 +41,10 @@ import javax.servlet.Filter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-@Slf4j
 @Configuration
 public class ShiroConfiguration {
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 管理shiro的生命周期
@@ -62,11 +62,6 @@ public class ShiroConfiguration {
     @Bean
     public CredentialsMatcher passwordMatcher() {
         return new RetryPasswordCredentialsMatcher();
-    }
-
-    @Bean(name = "shiroCacheManager")
-    CacheManager shiroCacheManager() {
-        return new ShiroRedisCacheManager();
     }
 
     /// 关闭shiro自带session
@@ -155,7 +150,6 @@ public class ShiroConfiguration {
     public SecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm,
                                                 Authenticator multipleRealmAuthentic) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
-        manager.setCacheManager(shiroCacheManager());
         manager.setSubjectFactory(new NoSessionWebSubjectFactory()); // 使用无状态的工厂
         // 默认SubjectDAO会写入会话，无状态时需要通过以下代码阻止写入
         DefaultSubjectDAO subjectDAO = (DefaultSubjectDAO) manager.getSubjectDAO();

@@ -1,12 +1,11 @@
 package com.w2.springtemplate.framework.shiro.cache;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
+@Deprecated(forRemoval = true)
 @Slf4j
 public class ShiroRedisCacheManager implements CacheManager {
 
