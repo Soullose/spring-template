@@ -9,7 +9,6 @@ import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
 import com.w2.springtemplate.framework.shiro.realm.BearerRealm;
 import com.w2.springtemplate.framework.shiro.realm.UserAccountRealm;
 import com.w2.springtemplate.framework.shiro.session.NoSessionWebSubjectFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.BearerToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -27,6 +26,8 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.config.ShiroFilterConfiguration;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -40,9 +41,10 @@ import javax.servlet.Filter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-@Slf4j
 @Configuration
 public class ShiroConfiguration {
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 管理shiro的生命周期
@@ -150,14 +152,14 @@ public class ShiroConfiguration {
                                                           Authenticator multipleRealmAuthentic) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setSubjectFactory(new NoSessionWebSubjectFactory()); // 使用无状态的工厂
-        // 默认SubjectDAO会写入会话，无状态时需要通过以下代码阻止写入
+        /// 默认SubjectDAO会写入会话，无状态时需要通过以下代码阻止写入
         DefaultSubjectDAO subjectDAO = (DefaultSubjectDAO) manager.getSubjectDAO();
         DefaultSessionStorageEvaluator sessionStorageEvaluator = (DefaultSessionStorageEvaluator) subjectDAO
                 .getSessionStorageEvaluator();
         sessionStorageEvaluator.setSessionStorageEnabled(false);
 
-        // 加入AccountRealm
-        manager.setRealms(Lists.newArrayList(userAccountRealm,bearerRealm));
+        /// 加入AccountRealm
+        manager.setRealms(Lists.newArrayList(userAccountRealm, bearerRealm));
         manager.setAuthenticator(multipleRealmAuthentic);
         return manager;
     }
@@ -169,7 +171,7 @@ public class ShiroConfiguration {
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        //
+        ///
         shiroFilterFactoryBean.setLoginUrl("/api/login");
 
         ShiroFilterConfiguration config = shiroFilterFactoryBean.getShiroFilterConfiguration();
@@ -181,7 +183,7 @@ public class ShiroConfiguration {
         log.info("shiroFilters--:{}", shiroFilters);
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         log.info("拦截地址:{}", shiroFilterFactoryBean.getFilterChainDefinitionMap());
-        // 前后端分离模式下不需要
+        /// 前后端分离模式下不需要
         shiroFilterFactoryBean.setSuccessUrl(null);
         shiroFilterFactoryBean.setUnauthorizedUrl(null);
         return shiroFilterFactoryBean;
@@ -194,7 +196,7 @@ public class ShiroConfiguration {
     @DependsOn("lifecycleBeanPostProcessor")
     DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        // 强制使用cglib，防止重复代理和可能引起代理出错的问题，https://zhuanlan.zhihu.com/p/29161098
+        /// 强制使用cglib，防止重复代理和可能引起代理出错的问题，https://zhuanlan.zhihu.com/p/29161098
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
         return defaultAdvisorAutoProxyCreator;
     }
