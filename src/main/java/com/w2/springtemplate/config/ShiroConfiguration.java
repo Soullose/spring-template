@@ -3,7 +3,6 @@ package com.w2.springtemplate.config;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.w2.springtemplate.framework.shiro.authc.MultipleRealmAuthentic;
-import com.w2.springtemplate.framework.shiro.cache.ShiroRedisCacheManager;
 import com.w2.springtemplate.framework.shiro.extention.RetryPasswordCredentialsMatcher;
 import com.w2.springtemplate.framework.shiro.filter.BearerAuthenticFilter;
 import com.w2.springtemplate.framework.shiro.filter.UserAccountLoginFilter;
@@ -18,8 +17,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
-import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.*;
 import org.apache.shiro.realm.Realm;
@@ -55,40 +52,17 @@ public class ShiroConfiguration {
         return new LifecycleBeanPostProcessor();
     }
 
-    /// 密码加密设置
-    // @Bean
-    // public PasswordEncoder passwordEncoder() {
-    // return new BCryptPasswordEncoder();
-    // }
-    //
-    // @Bean
-    // public PasswordService passwordService() {
-    // return new BCryptPasswordService(passwordEncoder());
-    // }
-    //
-    // @Bean
-    // public CredentialsMatcher passwordMatcher() {
-    // return new BCryptPasswordMatcher(passwordService());
-    // }
     @Bean
     public PasswordService defaultPasswordService() {
         return new DefaultPasswordService();
     }
 
-    // @Bean
-    // public CredentialsMatcher passwordMatcher() {
-    // return new PasswordMatcher();
-    // }
 
     @Bean
     public CredentialsMatcher passwordMatcher() {
         return new RetryPasswordCredentialsMatcher();
     }
 
-//    @Bean(name = "shiroCacheManager")
-//    CacheManager shiroCacheManager() {
-//        return new ShiroRedisCacheManager();
-//    }
 
     /// 关闭shiro自带session
     @Bean
@@ -153,12 +127,6 @@ public class ShiroConfiguration {
         UserAccountRealm userAccountRealm = new UserAccountRealm();
         userAccountRealm.setCredentialsMatcher(passwordMatcher());
         userAccountRealm.setAuthenticationTokenClass(UsernamePasswordToken.class);
-//        userAccountRealm.setCachingEnabled(true);
-//        userAccountRealm.setAuthenticationCachingEnabled(true);
-//        userAccountRealm.setAuthorizationCachingEnabled(true);
-//        userAccountRealm.setAuthenticationCacheName("authenticationCache");
-//        userAccountRealm.setAuthorizationCacheName("authorizationCache");
-//        userAccountRealm.setCacheManager(shiroCacheManager());
         return userAccountRealm;
     }
 
@@ -175,23 +143,12 @@ public class ShiroConfiguration {
         multipleRealmAuthentic.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
         multipleRealmAuthentic.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
         return multipleRealmAuthentic;
-
-        // ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator(); //
-        // MultiRealmAuthenticator
-        // 设置两个Realm，一个用于用户登录验证和访问权限获取；一个用于jwt token的认证
-        // authenticator.setRealms(Arrays.asList(bearerRealm, userAccountRealm));
-        // 设置多个realm认证策略，一个成功即跳过其它的
-        // authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
-        // return authenticator;
     }
 
     @Bean
     public DefaultWebSecurityManager shiroSecurityManager(Realm userAccountRealm, Realm bearerRealm,
                                                           Authenticator multipleRealmAuthentic) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
-//        manager.setCacheManager(shiroCacheManager());
-        // manager.setSessionManager(sessionManager());
-        // manager.setSubjectDAO(defaultSubjectDAO());
         manager.setSubjectFactory(new NoSessionWebSubjectFactory()); // 使用无状态的工厂
         // 默认SubjectDAO会写入会话，无状态时需要通过以下代码阻止写入
         DefaultSubjectDAO subjectDAO = (DefaultSubjectDAO) manager.getSubjectDAO();
@@ -199,8 +156,6 @@ public class ShiroConfiguration {
                 .getSessionStorageEvaluator();
         sessionStorageEvaluator.setSessionStorageEnabled(false);
 
-        // 加入AccountRealm
-        // manager.setRealms(Lists.newArrayList(userAccountRealm()));
         // 加入AccountRealm
         manager.setRealms(Lists.newArrayList(userAccountRealm,bearerRealm));
         manager.setAuthenticator(multipleRealmAuthentic);
