@@ -25,8 +25,8 @@ public class UIDGenConfiguration {
         cachedUidGenerator.setWorkerIdAssigner(disposableWorkerIdAssigner);
         //以下为可选配置, 如未指定将采用默认值
         cachedUidGenerator.setTimeBits(31);
-        cachedUidGenerator.setWorkerBits(23);
-        cachedUidGenerator.setSeqBits(9);
+        cachedUidGenerator.setWorkerBits(29);
+        cachedUidGenerator.setSeqBits(3);
         cachedUidGenerator.setEpochStr("2025-02-20");
         cachedUidGenerator.setBoostPower(3);
         cachedUidGenerator.setScheduleInterval(60L);
