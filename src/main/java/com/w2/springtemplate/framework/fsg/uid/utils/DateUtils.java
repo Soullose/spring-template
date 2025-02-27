@@ -58,6 +58,16 @@ public abstract class DateUtils extends org.apache.commons.lang3.time.DateUtils 
     }
 
     /**
+     * Parse date by 'yyyy-MM-dd HH:mm:ss.SSS' pattern
+     *
+     * @param str
+     * @return
+     */
+    public static Date parseByDateTimeMsPattern(String str) {
+        return parseDate(str, DATETIME_MS_PATTERN);
+    }
+
+    /**
      * Parse date without Checked exception
      *
      * @param str
