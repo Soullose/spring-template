@@ -16,14 +16,15 @@
 	<description>spring-template</description>
 	<properties>
 		<java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <jjwt.version>0.12.6</jjwt.version>
 		<guava.version>33.3.0-jre</guava.version>
 		<apache.commons-io.version>2.17.0</apache.commons-io.version>
 		<apache.shiro.version>2.0.2</apache.shiro.version>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
+        <password4j.version>1.8.2</password4j.version>
 	</properties>
 	<dependencies>
 
@@ -382,7 +383,11 @@
 <!--            <artifactId>uid-generator</artifactId>-->
 <!--            <version>0.0.4-RELEASE</version>-->
 <!--        </dependency>-->
-
+        <dependency>
+            <groupId>com.password4j</groupId>
+            <artifactId>password4j</artifactId>
+            <version>${password4j.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>
