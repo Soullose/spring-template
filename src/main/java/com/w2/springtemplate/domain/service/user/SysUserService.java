@@ -4,6 +4,7 @@ import com.w2.springtemplate.domain.model.user.User;
 import com.w2.springtemplate.domain.model.user.dto.RegisterUserDTO;
 import com.w2.springtemplate.domain.model.user.dto.UpdateUserDTO;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
+import com.w2.springtemplate.model.params.RegisterSysUserParams;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public interface SysUserService {
 	/// 注册
 	SysUser register(RegisterUserDTO user);
 
+    /// 注册
+    SysUser register(RegisterSysUserParams user);
 	/// 更新用户
 	SysUser update(UpdateUserDTO user);
 

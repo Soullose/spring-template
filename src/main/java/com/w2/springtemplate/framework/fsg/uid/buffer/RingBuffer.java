@@ -168,7 +168,16 @@ public class RingBuffer {
 
         // cursor catch the tail, means that there is no more available UID to take
         if (nextCursor == currentCursor) {
-            rejectedTakeHandler.rejectTakeBuffer(this);
+//            rejectedTakeHandler.rejectTakeBuffer(this);
+            Boolean running = false;
+            while (!running) {
+                running = bufferPaddingExecutor.booleanPaddingBuffer();
+            }
+            nextCursor = cursor.updateAndGet(old -> old == tail.get() ? old : old + 1);
+
+            if (nextCursor == currentCursor) {
+                rejectedTakeHandler.rejectTakeBuffer(this);
+            }
         }
 
         // 1. check next slot flag is CAN_TAKE_FLAG
@@ -218,7 +227,21 @@ public class RingBuffer {
         
         return flags;
     }
+    /**
+     * 判断缓冲区是否为空
+     * 当cursor等于tail时表示没有可消费元素
+     */
+    public boolean isEmpty() {
+        return cursor.get() == tail.get();
+    }
 
+    /**
+     * 判断缓冲区是否已满
+     * 当tail - cursor == bufferSize时表示无法继续生产
+     */
+    public boolean isFull() {
+        return tail.get() - cursor.get() == bufferSize;
+    }
     /**
      * Getters
      */

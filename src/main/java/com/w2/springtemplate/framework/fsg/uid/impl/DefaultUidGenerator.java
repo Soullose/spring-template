@@ -15,9 +15,6 @@
  */
 package com.w2.springtemplate.framework.fsg.uid.impl;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 import com.w2.springtemplate.framework.fsg.uid.BitsAllocator;
 import com.w2.springtemplate.framework.fsg.uid.UidGenerator;
 import com.w2.springtemplate.framework.fsg.uid.exception.UidGenerateException;
@@ -27,7 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -213,7 +212,7 @@ public class DefaultUidGenerator implements UidGenerator, InitializingBean {
     public void setEpochStr(String epochStr) {
         if (StringUtils.isNotBlank(epochStr)) {
             this.epochStr = epochStr;
-            this.epochSeconds = TimeUnit.MILLISECONDS.toSeconds(DateUtils.parseByDayPattern(epochStr).getTime());
+            this.epochSeconds = TimeUnit.MILLISECONDS.toSeconds(DateUtils.parseByDateTimeMsPattern(epochStr).getTime());
         }
     }
 }

@@ -10,8 +10,10 @@ import com.w2.springtemplate.infrastructure.converters.SysUserConverter;
 import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
+import com.w2.springtemplate.model.params.RegisterSysUserParams;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.PasswordService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -60,7 +62,16 @@ public class SysUserServiceImpl implements SysUserService {
 		return sysUserRepository.save(sysUser);
 	}
 
-	/**
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public SysUser register(RegisterSysUserParams user) {
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(user,sysUser);
+        sysUser.setPassword(passwordService.encryptPassword(DEFAULT_PASSWORD));
+        return sysUserRepository.save(sysUser);
+    }
+
+    /**
 	 * 修改用户信息
 	 * 
 	 * @param user

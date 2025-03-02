@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -51,7 +54,7 @@ public class SnowflakeIdGenerator {
 	/**
 	 * 起始时间戳
 	 **/
-	private final static long START_TIME = 1519740777809L;
+	private final static long START_TIME = 1740499200000L;
 	/**
 	 * dataCenterId占用的位数：2
 	 **/
@@ -63,7 +66,7 @@ public class SnowflakeIdGenerator {
 	/**
 	 * 序列号占用的位数：12（表示只允许workId的范围为：0-4095）
 	 **/
-	private final static long SEQUENCE_BITS = 12L;
+	private final static long SEQUENCE_BITS = 14L;
 
 	/**
 	 * workerId可以使用范围：0-255
@@ -113,7 +116,7 @@ public class SnowflakeIdGenerator {
 	}
 
 	public SnowflakeIdGenerator(long dataCenterId) {
-		this(dataCenterId, 0x000000FF & getLastIPAddress(), false, 5L, true);
+		this(dataCenterId, 0x000000FF & getLastIPAddress(), false, 1L, false);
 	}
 
 	public SnowflakeIdGenerator(long dataCenterId, boolean clock, boolean randomSequence) {
@@ -248,7 +251,7 @@ public class SnowflakeIdGenerator {
 	 * @return timestamp 毫秒时间戳
 	 */
 	private long timeGen() {
-		return clock ? SystemClock.currentTimeMillis() : System.currentTimeMillis();
+		return clock ? SystemClock.currentTimeMillis() : Duration.between(Instant.EPOCH, Clock.systemUTC().instant()).toNanos(); // System.currentTimeMillis();
 	}
 
 	/**

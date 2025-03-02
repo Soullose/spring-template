@@ -2,6 +2,7 @@ package com.w2.springtemplate.controller;
 
 import java.util.List;
 
+import com.w2.springtemplate.infrastructure.entities.SysUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +46,9 @@ public class UserController {
 	@ApiOperation(value = "注册用户")
 	@PostMapping("/register")
 	public ResponseEntity<SysUserDTO> userRegister(@RequestBody RegisterSysUserParams params) {
-		return ResponseEntity.ok(runEnvironment.run(RegisterSysUserCommand.builder().params(params).build()));
+        SysUser register = sysUserService.register(params);
+        return ResponseEntity.ok(SysUserDTOConverter.INSTANCE.fromPO(register));
+//		return ResponseEntity.ok(runEnvironment.run(RegisterSysUserCommand.builder().params(params).build()));
 	}
 
 	@ApiOperation(value = "校验密码")

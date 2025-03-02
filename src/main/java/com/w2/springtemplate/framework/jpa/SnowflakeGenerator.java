@@ -12,7 +12,9 @@ import java.io.Serializable;
 public class SnowflakeGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return String.valueOf(SpringUtil.getBean("cachedUidGenerator", UidGenerator.class).getUID());
+        return String.valueOf(HighConcurrentSnowflake.getNextId());
+//        return String.valueOf(new HighConcurrentSnowflake().nextId());
+//        return String.valueOf(SpringUtil.getBean("cachedUidGenerator", UidGenerator.class).getUID());
     }
 
 }
