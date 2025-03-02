@@ -140,7 +140,7 @@ public class HighConcurrentSnowflake {
     }
 
     private long timeGen() {
-        return System.currentTimeMillis();
+        return SystemClock.now();
     }
 
     // 以下是工具方法和示例用法
