@@ -1,5 +1,6 @@
 package com.w2.springtemplate.framework.shiro.extention;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -7,6 +8,8 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
@@ -21,8 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RetryPasswordCredentialsMatcher extends PasswordMatcher {
 
+//    @Autowired
+//    private RedisTemplate<String, Object> redisTemplate;
+
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedissonClient redissonClient;
 
     /**
      * 时间间隔（分钟）
@@ -37,8 +43,8 @@ public class RetryPasswordCredentialsMatcher extends PasswordMatcher {
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         String username = (String) token.getPrincipal();
-        int lockedNumber = 0;
-        RedisAtomicInteger counter = getRedisCounter(RedisPrefixKey.SYSTEM_SHIRO_AUTH_LOCK + username);
+        long lockedNumber = 0L;
+        RAtomicLong counter = getRedisCounter(RedisPrefixKey.SYSTEM_SHIRO_AUTH_LOCK + username);
         if (RedisUtils.hasKey(RedisPrefixKey.SYSTEM_SHIRO_AUTH_LOCK + username)) {
             log.debug("current:{}", counter.get());
             lockedNumber = counter.get();
@@ -57,13 +63,14 @@ public class RetryPasswordCredentialsMatcher extends PasswordMatcher {
         return match;
     }
 
-    private RedisAtomicInteger getRedisCounter(String key) {
-        RedisAtomicInteger counter = new RedisAtomicInteger(key, redisTemplate.getConnectionFactory());
-        if (counter.get() == 0) {
+    private RAtomicLong getRedisCounter(String key) {
+//        RedisAtomicInteger counter = new RedisAtomicInteger(key, redissonClient.get);
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(key);
+        if (atomicLong.get() == 0) {
             // 设置过期时间，5分钟
-            counter.expire(TIME_INTERVAL, TimeUnit.MINUTES);
+            atomicLong.expire(Duration.ofMinutes(TIME_INTERVAL));
         }
-        return counter;
+        return atomicLong;
     }
 
 }

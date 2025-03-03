@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
-@Configuration
+//@Configuration
 public class UIDGenConfiguration {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());

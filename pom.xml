@@ -25,6 +25,8 @@
 		<apache.commons-io.version>2.17.0</apache.commons-io.version>
 		<apache.shiro.version>2.0.2</apache.shiro.version>
         <password4j.version>1.8.2</password4j.version>
+        <redisson.version>3.44.0</redisson.version>
+        <cosid.version>1.19.3</cosid.version>
 	</properties>
 	<dependencies>
 
@@ -69,7 +71,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- spring boot redis starter 用于自动装配-->
+<!--		 spring boot redis starter 用于自动装配-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
@@ -388,6 +390,15 @@
             <artifactId>password4j</artifactId>
             <version>${password4j.version}</version>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>${redisson.version}</version>
+        </dependency>
+
 	</dependencies>
 
 	<build>
