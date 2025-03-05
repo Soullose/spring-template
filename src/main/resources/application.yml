@@ -46,8 +46,16 @@ spring:
     clientName: w2-server
 
   mvc:
-    pathmatch:
+    path-match:
       matching-strategy: ANT_PATH_MATCHER
 
 server:
   port: 19999
+
+management:
+  auditevents:
+    enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
