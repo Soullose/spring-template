@@ -21,8 +21,8 @@ public class BaseEntity {
     // @GenericGenerator(name = "NanoidGenerator", strategy =
     // "com.w2.springtemplate.framework.jpa.NanoidGenerator")
     // @GeneratedValue(generator = "NanoidGenerator")
-    @GenericGenerator(name = "SnowflakeGenerator", strategy = "com.w2.springtemplate.framework.jpa.SnowflakeGenerator")
-    @GeneratedValue(generator = "SnowflakeGenerator")
+    @GenericGenerator(name = "IdGenerator", strategy = "com.w2.springtemplate.framework.jpa.IdGenerator")
+    @GeneratedValue(generator = "IdGenerator")
     @Column(name = "id_")
     @Access(AccessType.PROPERTY)
     private String id;
