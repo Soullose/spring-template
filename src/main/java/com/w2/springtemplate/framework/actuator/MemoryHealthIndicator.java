@@ -1,5 +1,6 @@
 package com.w2.springtemplate.framework.actuator;
 
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
@@ -18,13 +19,19 @@ public class MemoryHealthIndicator extends AbstractHealthIndicator {
 
     @Override
     protected void doHealthCheck(Health.Builder builder) throws Exception {
-        // 获取堆内存使用率
-        double usedHeap = meterRegistry.get("jvm.memory.used")
+// 获取所有堆内存区域的已使用内存总和
+        double usedHeap = meterRegistry.find("jvm.memory.used")
                 .tag("area", "heap")
-                .gauge().value();
-        double maxHeap = meterRegistry.get("jvm.memory.max")
+                .gauges().stream()
+                .mapToDouble(Gauge::value)
+                .sum();
+
+        // 获取所有堆内存区域的最大内存总和
+        double maxHeap = meterRegistry.find("jvm.memory.max")
                 .tag("area", "heap")
-                .gauge().value();
+                .gauges().stream()
+                .mapToDouble(Gauge::value)
+                .sum();
         double usagePercent = (usedHeap / maxHeap) * 100;
         boolean isHealthy = usagePercent <= heapThreshold;
         if (isHealthy) {
