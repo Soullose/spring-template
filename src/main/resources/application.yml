@@ -53,9 +53,16 @@ server:
   port: 19999
 
 management:
-  auditevents:
-    enabled: true
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
         include: "*"
+  health:
+    diskspace:
+      enabled: true
+      threshold: 10MB
+
+
