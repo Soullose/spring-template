@@ -1,9 +1,12 @@
 package com.w2.springtemplate.framework.shiro.bcrypt;
 
-import com.w2.springtemplate.utils.crypto.PasswordEncoder;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.PasswordService;
 
+import com.w2.springtemplate.utils.crypto.PasswordEncoder;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Deprecated(forRemoval = true)
 @Slf4j
 public class BCryptPasswordService implements PasswordService {
 

@@ -1,125 +1,114 @@
 package com.w2.springtemplate.framework.jpa;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
-import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 系统时钟优化版（JDK 11+）
- * 1. 使用枚举实现防反射单例
- * 2. 添加优雅关闭逻辑
- * 3. 增强异常处理
- * 4. 内存可见性保障
+ * 增强版 SystemClock（继承自 Clock） - 支持单例模式 - 继承 Clock 以兼容 Java 时间 API - 保留原有高并发优化特性
  */
-public enum SystemClock {
+public final class SystemClock extends Clock {
+	// 单例实例（默认使用 UTC 时区）
+	private static final SystemClock INSTANCE = new SystemClock(ZoneId.of("UTC"), 1);
 
-    INSTANCE(1); // 默认1ms更新周期
+	private final ZoneId zone;
+	private final long period;
+	private volatile long now;
+	private final ScheduledExecutorService scheduler;
+	private final AtomicBoolean running = new AtomicBoolean(true);
 
-    private final long period;
-    private volatile long now;
-    private final ScheduledExecutorService scheduler;
-    private final AtomicBoolean running = new AtomicBoolean(true);
+	// 私有构造方法（保证单例）
+	private SystemClock(ZoneId zone, long period) {
+		this.zone = zone;
+		this.period = period;
+		this.now = computeCurrentTime();
+		this.scheduler = Executors.newSingleThreadScheduledExecutor(this::createThreadFactory);
+		startClockUpdating();
+		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+	}
 
-    // 定义 VarHandle 用于原子操作
-    private static final VarHandle NOW_HANDLE;
-    static {
-        try {
-            // 获取 SystemClock 类中名为 "now" 的 long 类型字段的 VarHandle
-            NOW_HANDLE = MethodHandles.privateLookupIn(SystemClock.class, MethodHandles.lookup())
-                    .findVarHandle(SystemClock.class, "now", long.class);
-        } catch (ReflectiveOperationException e) {
-            throw new ExceptionInInitializerError("Failed to initialize VarHandle for 'now'"+ e);
-        }
-    }
-    /**
-     * 枚举构造函数（线程安全）
-     */
-    SystemClock(long period) {
-        this.period = period;
-        this.now = System.currentTimeMillis();
+	// 获取单例实例
+	public static SystemClock instance() {
+		return INSTANCE;
+	}
 
-//        setNow(System.currentTimeMillis());
+	// 获取指定时区实例（可选扩展）
+	public static SystemClock of(ZoneId zone) {
+		return new SystemClock(zone, 1);
+	}
 
-        this.scheduler = Executors.newSingleThreadScheduledExecutor(this::createThreadFactory);
+	// ----- Clock 抽象方法实现 -----
+	@Override
+	public ZoneId getZone() {
+		return zone;
+	}
 
-        // 启动时钟更新任务
-        startClockUpdating();
+	@Override
+	public Clock withZone(ZoneId zone) {
+		if (this.zone.equals(zone)) {
+			return this;
+		}
+		return new SystemClock(zone, this.period); // 创建新实例
+	}
 
-        // 注册JVM关闭钩子
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-    }
+	@Override
+	public long millis() {
+		return now;
+	}
 
-//    // 通过 VarHandle 原子写入
-//    private void setNow(long newValue) {
-//        NOW_HANDLE.setVolatile(this, newValue);
-//    }
-//
-//    // 通过 VarHandle 原子读取
-//    private long getNow() {
-//        return (long) NOW_HANDLE.getVolatile(this);
-//    }
-    /**
-     * 创建守护线程工厂
-     */
-    private Thread createThreadFactory(Runnable r) {
-        var thread = new Thread(r, "SystemClock-Daemon");
-        thread.setDaemon(true); // 防止阻塞JVM退出
-        thread.setUncaughtExceptionHandler((t, e) ->
-                System.err.println("SystemClock thread error: " + e.getMessage()));
-        return thread;
-    }
+	@Override
+	public Instant instant() {
+		return Instant.ofEpochMilli(now);
+	}
 
-    /**
-     * 启动时钟更新任务（含异常捕获）
-     */
-    private void startClockUpdating() {
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                now = System.currentTimeMillis();
-//                setNow(System.currentTimeMillis());
-            } catch (Throwable t) {
-                if (running.get()) { // 仅运行态记录错误
-                    System.err.println("Update clock failed: " + t.getMessage());
-                }
-            }
-        }, 0, period, TimeUnit.MILLISECONDS);
-    }
+	// ----- 原有功能增强 -----
+	private Thread createThreadFactory(Runnable r) {
+		Thread thread = new Thread(r, "SystemClock-" + zone.getId());
+		thread.setDaemon(true);
+		thread.setUncaughtExceptionHandler((t, e) -> System.err.println("SystemClock thread error: " + e.getMessage()));
+		return thread;
+	}
 
-    /**
-     * 优雅关闭资源
-     */
-    private void shutdown() {
-        running.set(false);
-        scheduler.shutdown(); // 禁用新任务
+	private void startClockUpdating() {
+		scheduler.scheduleAtFixedRate(() -> {
+			try {
+				now = computeCurrentTime();
+			} catch (Throwable t) {
+				if (running.get()) {
+					System.err.println("Update clock failed: " + t.getMessage());
+				}
+			}
+		}, 0, period, TimeUnit.MILLISECONDS);
+	}
 
-        try {
-            if (!scheduler.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                scheduler.shutdownNow(); // 强制终止
-            }
-        } catch (InterruptedException e) {
-            scheduler.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
-    }
+	private long computeCurrentTime() {
+		// 根据时区计算时间（示例逻辑，需按需完善）
+		return System.currentTimeMillis() + zone.getRules().getOffset(Instant.now()).getTotalSeconds() * 1000L;
+	}
 
-    /**
-     * 获取当前时间（对外暴露方法）
-     */
-    public static long now() {
-        return INSTANCE.now;
-//        return INSTANCE.getNow();
-    }
+	private void shutdown() {
+		running.set(false);
+		scheduler.shutdown();
+		try {
+			if (!scheduler.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+				scheduler.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			scheduler.shutdownNow();
+			Thread.currentThread().interrupt();
+		}
+	}
 
-    //----- 兼容旧版API -----
-    public static long currentTimeMillis() {
-        return now();
-    }
+	// ----- 兼容旧版 API -----
+	public static long now() {
+		return INSTANCE.now;
+	}
 
-    public static Timestamp timestamp() {
-        return new Timestamp(now());
-    }
+	public static long currentTimeMillis() {
+		return now();
+	}
 }
