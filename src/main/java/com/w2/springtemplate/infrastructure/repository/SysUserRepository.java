@@ -2,13 +2,17 @@ package com.w2.springtemplate.infrastructure.repository;
 
 import com.w2.springtemplate.framework.jpa.BaseJpaRepository;
 import com.w2.springtemplate.framework.jpa.CustomRepository;
+import com.w2.springtemplate.infrastructure.entities.QSysUser;
 import com.w2.springtemplate.infrastructure.entities.SysUser;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
+import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 @Repository
-public interface SysUserRepository extends BaseJpaRepository<SysUser, String> {
+public interface SysUserRepository extends BaseJpaRepository<SysUser, String>, QuerydslBinderCustomizer<QSysUser> {
 
 	/// 注册
 //	default SysUser register(RegisterUserDTO user) {
@@ -33,4 +37,8 @@ public interface SysUserRepository extends BaseJpaRepository<SysUser, String> {
 //	}
 
 
+    @Override
+    default void customize(QuerydslBindings bindings, QSysUser root){
+
+    };
 }
