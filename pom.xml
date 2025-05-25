@@ -23,7 +23,7 @@
         <jjwt.version>0.12.6</jjwt.version>
 		<guava.version>33.3.0-jre</guava.version>
 		<apache.commons-io.version>2.17.0</apache.commons-io.version>
-		<apache.shiro.version>2.0.2</apache.shiro.version>
+		<apache.shiro.version>2.0.4</apache.shiro.version>
         <password4j.version>1.8.2</password4j.version>
         <redisson.version>3.44.0</redisson.version>
         <cosid.version>1.19.3</cosid.version>
@@ -31,7 +31,7 @@
         <vfs2.version>2.9.0</vfs2.version>
         <hutool.version>5.8.36</hutool.version>
         <java-uuid-generator.version>3.3.0</java-uuid-generator.version>
-        <uuid-creator.version>6.0.0</uuid-creator.version>
+        <uuid-creator.version>6.1.1</uuid-creator.version>
 	</properties>
 	<dependencies>
 
