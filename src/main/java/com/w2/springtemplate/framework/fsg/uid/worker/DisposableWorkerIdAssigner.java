@@ -20,12 +20,13 @@ import com.w2.springtemplate.framework.fsg.uid.utils.DockerUtils;
 import com.w2.springtemplate.framework.fsg.uid.utils.NetUtils;
 import com.w2.springtemplate.framework.fsg.uid.worker.dao.WorkerNodeRepository;
 import com.w2.springtemplate.framework.fsg.uid.worker.entity.WorkerNodeEntity;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+
 import java.util.Date;
 
 /**

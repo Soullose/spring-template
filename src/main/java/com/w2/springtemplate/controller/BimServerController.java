@@ -16,22 +16,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.w2.springtemplate.controller.test.BimCountParams;
-import com.w2.springtemplate.controller.test.BimCountRestParams;
-import com.w2.springtemplate.controller.test.BimFindByParams;
-import com.w2.springtemplate.controller.test.BimLoginParams;
-import com.w2.springtemplate.controller.test.BimLoginRestParams;
-import com.w2.springtemplate.controller.test.BimLogoutParams;
-import com.w2.springtemplate.controller.test.BimLogoutRestParams;
-import com.w2.springtemplate.controller.test.Test;
-import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
-import com.w2.springtemplate.controller.test.WCIdentityResultUser;
-import com.w2.springtemplate.controller.test.WCOrgData;
-import com.w2.springtemplate.controller.test.WCUserData;
+import com.w2.springtemplate.controller.test.*;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description 武船身份治理测试接口
  */
 
-@Api(tags = "武船身份治理测试接口")
+@Tag(name = "武船身份治理测试接口")
 @RestController
 @RequestMapping("/bim-server")
 @Slf4j
@@ -55,7 +44,7 @@ public class BimServerController {
 
     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
-    @ApiOperation(value = "测试武船身份治理系统登录接口")
+    @Operation(summary = "测试武船身份治理系统登录接口")
     @PostMapping(value = "/api/rest/integration/ExtApiIngtAuthService/login")
     public ResponseEntity<BimLoginRestParams> testLogin(@RequestBody BimLoginParams params) {
         log.debug("params: {}", params);
@@ -64,7 +53,7 @@ public class BimServerController {
         return ResponseEntity.ok(bimLoginRestParams);
     }
 
-    @ApiOperation(value = "测试武船身份治理系统退出接口")
+    @Operation(summary = "测试武船身份治理系统退出接口")
     @PostMapping(value = "/api/rest/integration/ExtApiIngtAuthService/logout")
     public ResponseEntity<BimLogoutRestParams> testLogout(@RequestBody BimLogoutParams params) {
         log.debug("params: {}", params);
@@ -72,7 +61,7 @@ public class BimServerController {
         return ResponseEntity.ok(bimLogoutRestParams);
     }
 
-    @ApiOperation(value = "测试武船身份治理系统组织数量接口")
+    @Operation(summary = "测试武船身份治理系统组织数量接口")
     @PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/countBy")
     public ResponseEntity<BimCountRestParams> testOrgCountWC(@RequestBody BimCountParams params) {
         log.debug("bimOrgCountParams: {}", params);
@@ -80,7 +69,7 @@ public class BimServerController {
         return ResponseEntity.ok(bimOrgCountRestParams);
     }
 
-    @ApiOperation(value = "测试武船身份治理系统用户查询接口")
+    @Operation(summary = "测试武船身份治理系统用户查询接口")
     @PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/countBy")
     public ResponseEntity<BimCountRestParams> testUserCountWC(@RequestBody BimCountParams params) {
         log.debug("bimOrgCountParams: {}", params);
@@ -88,7 +77,7 @@ public class BimServerController {
         return ResponseEntity.ok(bimUserCountRestParams);
     }
 
-    @ApiOperation(value = "测试武船身份治理系统组织查询接口")
+    @Operation(summary = "测试武船身份治理系统组织查询接口")
     @PostMapping(value = "/api/rest/integration/ExtApiIngtTargetOrganizationService/findBy")
     public ResponseEntity<WCIdentityResultOrg> testOrgFindByWC(@RequestBody BimFindByParams params) {
         log.debug("bimFindByParams: {}", params);
@@ -104,7 +93,7 @@ public class BimServerController {
         return ResponseEntity.ok(wcIdentityResultOrg);
     }
 
-    @ApiOperation(value = "测试武船身份治理系统用户数量接口")
+    @Operation(summary = "测试武船身份治理系统用户数量接口")
     @PostMapping(value = "/api/rest/integration/ExtApiIngtTargetAccountService/findBy")
     public ResponseEntity<WCIdentityResultUser> testUserFindByWC(@RequestBody BimFindByParams params) {
         log.debug("bimFindByParams: {}", params);

@@ -2,6 +2,8 @@ package com.w2.springtemplate.controller;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +13,10 @@ import com.google.common.collect.Lists;
 import com.w2.springtemplate.infrastructure.repository.InterfaceInfoRepository;
 import com.w2.springtemplate.model.InterfaceInfo;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+
 import lombok.extern.slf4j.Slf4j;
 
-@Api(tags = "接口管理")
+@Tag(name = "接口管理")
 @RestController
 @RequestMapping("api/interface-info")
 @Slf4j
@@ -38,7 +39,7 @@ public class InterfaceInfoController {
         return ResponseEntity.ok(info);
     }
 
-    @ApiOperation(value = "查询所有接口数据")
+    @Operation(summary = "查询所有接口数据")
     @PostMapping("/queryAll")
     public ResponseEntity<List<InterfaceInfo>> queryAll() {
         // QInterfaceInfo qInterfaceInfo = QInterfaceInfo.interfaceInfo;

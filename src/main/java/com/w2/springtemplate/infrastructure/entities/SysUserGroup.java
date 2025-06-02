@@ -1,19 +1,22 @@
 package com.w2.springtemplate.infrastructure.entities;
 
+import java.io.Serializable;
+
+import org.hibernate.annotations.Comment;
+
 import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.Table;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "t_sys_user_group")
-@Table(appliesTo = "t_sys_user_group", comment = "用户组表")
+@Table(name = "t_sys_user_group")
+@Comment("系统用户组表")
 public class SysUserGroup extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 7655253369587049270L;
 

@@ -1,20 +1,22 @@
 package com.w2.springtemplate.infrastructure.entities;
 
+import java.io.Serializable;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Sets;
 import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Table;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Set;
+import org.hibernate.annotations.Comment;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "t_sys_role")
-@Table(appliesTo = "t_sys_role", comment = "角色表")
+@Table(name = "t_sys_role")
+@Comment("系统角色表")
 public class SysRole extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 4015033813412866557L;

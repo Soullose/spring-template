@@ -1,20 +1,22 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import com.google.common.collect.Sets;
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.Table;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
+
+import org.hibernate.annotations.Comment;
+
+import com.google.common.collect.Sets;
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "t_permission")
-@Table(appliesTo = "t_permission", comment = "系统权限表")
+@Table(name = "t_permission")
+@Comment("系统权限表")
 public class SysPermission extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -692457396908500198L;

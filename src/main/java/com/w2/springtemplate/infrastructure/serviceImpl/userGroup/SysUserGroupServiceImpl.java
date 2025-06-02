@@ -5,12 +5,13 @@ import com.w2.springtemplate.domain.service.userGroup.SysUserGroupService;
 import com.w2.springtemplate.infrastructure.entities.QSysUserGroup;
 import com.w2.springtemplate.infrastructure.entities.SysUserGroup;
 import com.w2.springtemplate.infrastructure.repository.SysUserGroupRepository;
+import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+
 
 @Service
 public class SysUserGroupServiceImpl implements SysUserGroupService {

@@ -31,19 +31,20 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         user_sql_comments: true
   liquibase:
     enabled: false
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    password: Cr4gs54ZXKJoVFYBV5J
-    database: 0
-    timeout: 6000
-    connectTimeout: 10000
-    clientName: w2-server
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: Cr4gs54ZXKJoVFYBV5J
+      database: 0
+      timeout: 6000
+      connectTimeout: 10000
+      clientName: w2-server
 
   mvc:
     path-match:
@@ -52,17 +53,17 @@ spring:
 server:
   port: 19999
 
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  health:
-    diskspace:
-      enabled: true
-      threshold: 10MB
+#management:
+#  endpoint:
+#    health:
+#      show-details: always
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  health:
+#    diskspace:
+#      enabled: true
+#      threshold: 10MB
 
 
