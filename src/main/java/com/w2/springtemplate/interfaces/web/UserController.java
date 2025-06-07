@@ -1,4 +1,4 @@
-package com.w2.springtemplate.controller;
+package com.w2.springtemplate.interfaces.web;
 
 import java.util.List;
 

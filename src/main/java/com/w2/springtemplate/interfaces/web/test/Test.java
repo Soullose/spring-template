@@ -1,4 +1,4 @@
-package com.w2.springtemplate.controller.test;
+package com.w2.springtemplate.interfaces.web.test;
 
 public final class Test {
     public static final String org = "{\n" +
