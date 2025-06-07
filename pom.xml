@@ -416,11 +416,6 @@
             <version>${uuid-creator.version}</version>
         </dependency>
         <dependency>
-            <groupId>cn.smallbun.screw</groupId>
-            <artifactId>screw-core</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-        <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>10.2.3.jre8</version>
