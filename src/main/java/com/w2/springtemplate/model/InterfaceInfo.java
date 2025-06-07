@@ -1,18 +1,19 @@
 package com.w2.springtemplate.model;
 
+import java.io.Serializable;
+
 import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.io.Serializable;
-
 @Getter
 @Setter
-@Table(name = "t_interface_info")
 @Entity
+@Table(name = "t_interface_info")
 public class InterfaceInfo extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

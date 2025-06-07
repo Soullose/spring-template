@@ -2,10 +2,9 @@ package com.w2.springtemplate.infrastructure.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-import javax.persistence.Access;
-
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Comment;
 
 /**
  * @author wsfzj 2024/7/16
@@ -16,6 +15,7 @@ import lombok.Data;
 @Entity
 @Table(name = "t_user_role")
 @IdClass(SysUserRoleId.class)
+@Comment("用户角色绑定表")
 public class SysUserRole implements Serializable {
 	private static final long serialVersionUID = -6713253701482698959L;
 

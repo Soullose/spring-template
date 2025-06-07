@@ -1,56 +1,54 @@
 package com.w2.springtemplate.framework.jpa;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.*;
+import lombok.Data;
 
 @Data
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public class BaseEntity {
 
-    @Id
-    // @GenericGenerator(name = "NanoidGenerator", strategy =
-    // "com.w2.springtemplate.framework.jpa.NanoidGenerator")
-    // @GeneratedValue(generator = "NanoidGenerator")
-    @GenericGenerator(name = "IdGenerator", strategy = "com.w2.springtemplate.framework.jpa.IdGenerator")
-    @GeneratedValue(generator = "IdGenerator")
-    @Column(name = "id_")
-    @Access(AccessType.PROPERTY)
-    private String id;
+	@Id
+	@BaseId
+	@GeneratedValue(generator = "IdGenerator")
+	@Column(name = "id_")
+	@Access(AccessType.PROPERTY)
+	private String id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @CreatedDate
-    @Column(name = "created_at_")
-    private LocalDateTime createdAt;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@CreatedDate
+	@Column(name = "created_at_")
+	private LocalDateTime createdAt;
 
-    @CreatedBy
-    @Column(name = "create_user_id_")
-    private String createUserId;
+	@CreatedBy
+	@Column(name = "create_user_id_")
+	private String createUserId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @LastModifiedDate
-    @Column(name = "updated_at_")
-    private LocalDateTime updatedAt;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@LastModifiedDate
+	@Column(name = "updated_at_")
+	private LocalDateTime updatedAt;
 
-    @LastModifiedBy
-    @Column(name = "update_user_id_")
-    private String updateUserId;
+	@LastModifiedBy
+	@Column(name = "update_user_id_")
+	private String updateUserId;
 
-    // @Column(name = "create_user_name_")
-    // private String createUserName;
-    //
-    // @PrePersist
-    // public void currentLoggedInName(){
-    // createUserName = new CurrentLoggedInName().getName();
-    // }
+	// @Column(name = "create_user_name_")
+	// private String createUserName;
+	//
+	// @PrePersist
+	// public void currentLoggedInName(){
+	// createUserName = new CurrentLoggedInName().getName();
+	// }
 
 }

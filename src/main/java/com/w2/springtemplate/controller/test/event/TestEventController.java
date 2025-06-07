@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.w2.springtemplate.framework.event.guava.EventBusFactory;
 import com.w2.springtemplate.framework.event.guava.TestEvent;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @version 1.0
  * @description TODO
  */
-@Api(tags = "测试事件接口")
+@Tag(name = "测试事件接口")
 @RestController
 @RequestMapping("/testEvent")
 @Slf4j

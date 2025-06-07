@@ -1,21 +1,24 @@
 package com.w2.springtemplate.infrastructure.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Sets;
-import com.w2.springtemplate.framework.jpa.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.hibernate.annotations.Comment;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Sets;
+import com.w2.springtemplate.framework.jpa.BaseEntity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "t_sys_user")
 @Entity
+@Table(name = "t_sys_user")
+@Comment("系统用户表")
 public class SysUser extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 4220958672909825116L;
 	/// 登录账户,唯一.

@@ -1,22 +1,22 @@
 package com.w2.springtemplate.model.params;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class RegisterSysUserParams {
-    @ApiModelProperty(value = "姓名", required = true, example = "王大锤")
+    @Schema(name = "姓名", required = true, example = "王大锤")
     private String name;
-    @ApiModelProperty(value = "用户名", required = true, example = "admin")
+    @Schema(name = "用户名", required = true, example = "admin")
     private String username;
-    @ApiModelProperty(value = "密码", required = true, example = "123456")
+    @Schema(name = "密码", required = true, example = "123456")
     private String password;
-    @ApiModelProperty(value = "邮箱", example = "xxx@xx.com")
+    @Schema(name = "邮箱", example = "xxx@xx.com")
     private String email;
-    @ApiModelProperty(value = "电话", example = "110")
+    @Schema(name = "电话", example = "110")
     private String phone;
-    @ApiModelProperty(value = "地址", example = "XXX镇XXX路XXX号")
+    @Schema(name = "地址", example = "XXX镇XXX路XXX号")
     private String address;
-    @ApiModelProperty(value = "身份证", required = true, example = "3211XXXXXX1231")
+    @Schema(name = "身份证", required = true, example = "3211XXXXXX1231")
     private String idCard;
 }
