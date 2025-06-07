@@ -22,11 +22,13 @@ import com.w2.springtemplate.infrastructure.entities.SysUser;
 import com.w2.springtemplate.infrastructure.repository.SysUserRepository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 
 @Slf4j
 public class UserAccountRealm extends AuthorizingRealm {
 
 	@Autowired
+    @Lazy
 	private SysUserRepository repository;
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();

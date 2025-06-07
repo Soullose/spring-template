@@ -11,6 +11,7 @@ import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class RetryPasswordCredentialsMatcher extends PasswordMatcher {
 //    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
+    @Lazy
     private RedissonClient redissonClient;
 
     /**
