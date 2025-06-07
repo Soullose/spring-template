@@ -1,4 +1,4 @@
-package com.w2.springtemplate.config;
+package com.w2.springtemplate.common.config;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

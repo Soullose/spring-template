@@ -1,4 +1,4 @@
-package com.w2.springtemplate.controller;
+package com.w2.springtemplate.interfaces.web;
 
 import java.io.*;
 import java.net.URL;
@@ -41,8 +41,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.w2.springtemplate.controller.test.WCIdentityResultOrg;
-import com.w2.springtemplate.controller.test.WCOrgData;
+import com.w2.springtemplate.interfaces.web.test.WCIdentityResultOrg;
+import com.w2.springtemplate.interfaces.web.test.WCOrgData;
 import com.w2.springtemplate.domain.service.userGroup.SysUserGroupService;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Cipher;
 import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4CipherPool;

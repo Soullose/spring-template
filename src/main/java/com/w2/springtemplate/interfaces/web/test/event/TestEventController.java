@@ -1,4 +1,4 @@
-package com.w2.springtemplate.controller.test.event;
+package com.w2.springtemplate.interfaces.web.test.event;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

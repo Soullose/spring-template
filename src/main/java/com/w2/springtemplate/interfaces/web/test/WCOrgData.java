@@ -1,4 +1,4 @@
-package com.w2.springtemplate.controller.test;
+package com.w2.springtemplate.interfaces.web.test;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,13 +1,18 @@
-package com.w2.springtemplate.controller.test;
+package com.w2.springtemplate.interfaces.web.test;
 
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * @author wsfzj 2024/9/18
+ * @version 1.0
+ * @description TODO
+ */
 @Data
 @Builder
-public class BimLogoutRestParams {
+public class BimLoginRestParams {
     private boolean success;
-    private boolean data;
+    private String data;
     private String errorCode;
     private String errorName;
     private String errorMessage;

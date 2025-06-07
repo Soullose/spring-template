@@ -1,4 +1,4 @@
-package com.w2.springtemplate.config;
+package com.w2.springtemplate.common.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

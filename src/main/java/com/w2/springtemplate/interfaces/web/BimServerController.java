@@ -1,9 +1,10 @@
-package com.w2.springtemplate.controller;
+package com.w2.springtemplate.interfaces.web;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.w2.springtemplate.interfaces.web.test.*;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.w2.springtemplate.controller.test.*;
 import com.w2.springtemplate.framework.vfs.ApacheVfsResource;
 
 import io.swagger.v3.oas.annotations.Operation;
