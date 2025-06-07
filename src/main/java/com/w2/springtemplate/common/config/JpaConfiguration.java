@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -18,6 +20,7 @@ import jakarta.persistence.EntityManager;
 // @EnableJpaRepositories(repositoryFactoryBeanClass =
 // CustomRepositoryFactoryBean.class, basePackages = {
 // "com.w2.springtemplate.infrastructure.repository" })
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class JpaConfiguration {
 	private static final Logger log = LoggerFactory.getLogger(JpaConfiguration.class);
 

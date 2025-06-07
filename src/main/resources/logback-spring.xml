@@ -1,17 +1,23 @@
 <configuration>
 
-    <conversionRule conversionWord="custom_color" converterClass="com.w2.springtemplate.framework.logback.W2LogbackColor" />
+    <conversionRule conversionWord="custom_color"
+                    class="com.w2.springtemplate.framework.logback.W2LogbackColor"/>
 
-    <appender name="colorAppender" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d %green([%thread]) %highlight(%level) %logger{50} - %msg%n</pattern>
-        </layout>
-    </appender>
+    <!--    <appender name="colorAppender" class="ch.qos.logback.core.ConsoleAppender">-->
+    <!--        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
+    <!--            <layout class="ch.qos.logback.classic.PatternLayout">-->
+    <!--                <pattern>%d %green([%thread]) %highlight(%level) %logger{50} - %msg%n</pattern>-->
+    <!--            </layout>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
 
     <appender name="DEFAULT_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout  class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d %green([%thread]) %custom_color(%level) %boldCyan(%logger{50}) - %custom_color(%msg%n)</pattern>
-        </layout>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%d %green([%thread]) %custom_color(%level) %boldCyan(%logger{50}) - %custom_color(%msg%n)
+                </pattern>
+            </layout>
+        </encoder>
     </appender>
 
 
@@ -30,25 +36,28 @@
             <!--所有的日志文件最大10G，超过就会删除旧的日志-->
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %d{yyyy-MM-dd HH:mm:ss} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n
-            </Pattern>
-        </layout>
+
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n
+                </Pattern>
+            </layout>
+        </encoder>
     </appender>
 
     <logger name="org.springframework" level="INFO" additivity="false">
-        <appender-ref ref="DEFAULT_STDOUT" />
-        <appender-ref ref="LOGFILE" />
+        <appender-ref ref="DEFAULT_STDOUT"/>
+        <appender-ref ref="LOGFILE"/>
     </logger>
 
     <logger name="com.w2" level="TRACE" additivity="false">
-        <appender-ref ref="DEFAULT_STDOUT" />
-        <appender-ref ref="LOGFILE" />
+        <appender-ref ref="DEFAULT_STDOUT"/>
+        <appender-ref ref="LOGFILE"/>
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="DEFAULT_STDOUT" />
-        <appender-ref ref="LOGFILE" />
+        <appender-ref ref="DEFAULT_STDOUT"/>
+        <appender-ref ref="LOGFILE"/>
     </root>
 </configuration>

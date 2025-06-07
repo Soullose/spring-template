@@ -30,6 +30,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import com.google.common.collect.Lists;
@@ -46,17 +48,10 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 
 @Configuration
+@Order()
 public class ShiroConfiguration {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
-
-	/**
-	 * 管理shiro的生命周期
-	 */
-	@Bean
-	public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
-		return new LifecycleBeanPostProcessor();
-	}
 
 	@Bean
 	public PasswordService defaultPasswordService() {
@@ -195,20 +190,28 @@ public class ShiroConfiguration {
 	 * 下面的代码是添加注解支持
 	 */
 	@Bean
-	@DependsOn("lifecycleBeanPostProcessor")
-	DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+//	@DependsOn("lifecycleBeanPostProcessor")
+    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
 		DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
 		/// 强制使用cglib，防止重复代理和可能引起代理出错的问题，https://zhuanlan.zhihu.com/p/29161098
 		defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
 		return defaultAdvisorAutoProxyCreator;
 	}
 
+    /**
+     * 管理shiro的生命周期
+     */
+    @Bean
+    public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
+    }
+
 	/**
 	 * 加入shiro注解 切点
 	 */
 	@Bean
-	@DependsOn("lifecycleBeanPostProcessor")
-	AuthorizationAttributeSourceAdvisor shiroAuthorizationAttributeSourceAdvisor(
+//	@DependsOn("lifecycleBeanPostProcessor")
+    public static AuthorizationAttributeSourceAdvisor shiroAuthorizationAttributeSourceAdvisor(
 			@Autowired SecurityManager securityManager) {
 		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
 		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
