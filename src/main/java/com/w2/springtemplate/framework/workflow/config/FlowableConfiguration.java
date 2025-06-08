@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 // @Order(value = Ordered.LOWEST_PRECEDENCE)
 @Slf4j
 @AutoConfigureBefore(LiquibaseAutoConfiguration.class)
-@Configuration(proxyBeanMethods = false)
+@Configuration(proxyBeanMethods = true)
 // @ConfigurationProperties(prefix = "w2.flowable.processor")
 public class FlowableConfiguration implements InitializingBean {
 
