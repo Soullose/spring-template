@@ -32,7 +32,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 @EnableConfigurationProperties({RedisProperties.class})
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@DependsOn("jpaConfiguration")
+//@DependsOn("jpaConfiguration")
 public class RedisConfiguration {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
@@ -45,23 +46,30 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 
 @Configuration
-@Order()
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
+@AutoConfigureBefore(RedisConfiguration.class)
 public class ShiroConfiguration {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	public PasswordService defaultPasswordService() {
 		return new DefaultPasswordService();
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	public CredentialsMatcher passwordMatcher() {
 		return new RetryPasswordCredentialsMatcher();
 	}
 
 	/// 关闭shiro自带session
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	SessionManager sessionManager() {
 		DefaultSessionManager sessionManager = new DefaultSessionManager();
 		sessionManager.setSessionValidationSchedulerEnabled(false);
@@ -70,6 +78,8 @@ public class ShiroConfiguration {
 
 	/// 关闭shiro自带session
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	SessionStorageEvaluator sessionStorageEvaluator() {
 		DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
 		sessionStorageEvaluator.setSessionStorageEnabled(false);
@@ -78,6 +88,8 @@ public class ShiroConfiguration {
 
 	/// 关闭shiro自带session
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	SubjectDAO defaultSubjectDAO() {
 		DefaultSubjectDAO defaultSubjectDAO = new DefaultSubjectDAO();
 		defaultSubjectDAO.setSessionStorageEvaluator(sessionStorageEvaluator());
@@ -85,6 +97,8 @@ public class ShiroConfiguration {
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	FilterRegistrationBean<Filter> shiroFilterRegistrationBean() {
 		FilterRegistrationBean<Filter> filterRegistration = new FilterRegistrationBean<>();
 		filterRegistration.setFilter(new DelegatingFilterProxy("shiroFilterFactoryBean"));
@@ -96,6 +110,8 @@ public class ShiroConfiguration {
 
 	/// 自定义过滤器
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	LinkedHashMap<String, Filter> filters() {
 		LinkedHashMap<String, Filter> filters = Maps.newLinkedHashMap();
 		filters.put("jwt", new BearerAuthenticFilter());
@@ -105,6 +121,8 @@ public class ShiroConfiguration {
 
 	/// 路径匹配规则
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	LinkedHashMap<String, String> filterChainDefinitionMap() {
 		LinkedHashMap<String, String> filterChainDefinitionMap = Maps.newLinkedHashMap();
 		filterChainDefinitionMap.put("/api/login", "login");
@@ -119,6 +137,8 @@ public class ShiroConfiguration {
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	UserAccountRealm userAccountRealm() {
 		UserAccountRealm userAccountRealm = new UserAccountRealm();
 		userAccountRealm.setCredentialsMatcher(passwordMatcher());
@@ -127,6 +147,8 @@ public class ShiroConfiguration {
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	BearerRealm bearerRealm() {
 		BearerRealm bearerRealm = new BearerRealm();
 		bearerRealm.setAuthenticationTokenClass(BearerToken.class);
@@ -134,6 +156,8 @@ public class ShiroConfiguration {
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	Authenticator multipleRealmAuthentic(BearerRealm bearerRealm,
 			UserAccountRealm userAccountRealm) {
 		MultipleRealmAuthentic multipleRealmAuthentic = new MultipleRealmAuthentic();
@@ -143,6 +167,8 @@ public class ShiroConfiguration {
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	public DefaultWebSecurityManager shiroSecurityManager(UserAccountRealm userAccountRealm, BearerRealm bearerRealm,
 			Authenticator multipleRealmAuthentic) {
 		DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
@@ -160,6 +186,8 @@ public class ShiroConfiguration {
 	}
 
 	@Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
 	public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager,
 			LinkedHashMap<String, Filter> filters, LinkedHashMap<String, String> filterChainDefinitionMap) {
 
@@ -188,6 +216,8 @@ public class ShiroConfiguration {
 	 */
 	@Bean
 //	@DependsOn("lifecycleBeanPostProcessor")
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
     public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
 		DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
 		/// 强制使用cglib，防止重复代理和可能引起代理出错的问题，https://zhuanlan.zhihu.com/p/29161098
@@ -199,6 +229,8 @@ public class ShiroConfiguration {
      * 管理shiro的生命周期
      */
     @Bean
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
@@ -208,6 +240,8 @@ public class ShiroConfiguration {
 	 */
 	@Bean
 //	@DependsOn("lifecycleBeanPostProcessor")
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    @Lazy
     public static AuthorizationAttributeSourceAdvisor shiroAuthorizationAttributeSourceAdvisor(
 			@Autowired SecurityManager securityManager) {
 		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
