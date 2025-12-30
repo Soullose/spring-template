@@ -132,6 +132,7 @@ public class ShiroConfiguration {
 		filterChainDefinitionMap.put("/test/**", "anon");
 		filterChainDefinitionMap.put("/testEvent/**", "anon");
 		filterChainDefinitionMap.put("/bim-server/**", "anon");
+        filterChainDefinitionMap.put("/webroot/service/publish/**", "anon");
 		filterChainDefinitionMap.put("/**", "anon");
 		return filterChainDefinitionMap;
 	}

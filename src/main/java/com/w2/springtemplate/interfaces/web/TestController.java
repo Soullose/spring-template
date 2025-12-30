@@ -3,11 +3,6 @@ package com.w2.springtemplate.interfaces.web;
 import java.io.*;
 import java.net.URL;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.fontbox.ttf.TTFParser;
@@ -17,8 +12,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.bouncycastle.pqc.legacy.math.linearalgebra.ByteUtils;
-import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ResourceLoader;
@@ -41,13 +34,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.w2.springtemplate.interfaces.web.test.WCIdentityResultOrg;
-import com.w2.springtemplate.interfaces.web.test.WCOrgData;
 import com.w2.springtemplate.domain.service.userGroup.SysUserGroupService;
-import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Cipher;
-import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4CipherPool;
-import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Mode;
-import com.w2.springtemplate.framework.encrypt.gm.sm4.SM4Util;
 import com.w2.springtemplate.framework.io.fonts.FontUtils;
 import com.w2.springtemplate.framework.io.pdf.PdfBoxUtils;
 import com.w2.springtemplate.framework.oos.client.OOSClient;
@@ -394,92 +381,20 @@ public class TestController {
 		ApacheVfsResource apacheVfsResource = (ApacheVfsResource) resourceLoader.getResource("vfs://cccccc/org.json");
 
 		List<String> lines = null;
-		List<WCOrgData> wcIdentityResultOrgData = null;
 		try {
 			File file = apacheVfsResource.getFile();
 			String json = FileUtils.readFileToString(file, "UTF-8");
-			WCIdentityResultOrg wcIdentityResultOrg = gson.fromJson(json, WCIdentityResultOrg.class);
-			// log.error("武船和身份治理系统组织同步成功2:{}",
-			// objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wcIdentityResultOrg));
-			wcIdentityResultOrgData = wcIdentityResultOrg.getData();
-			Set<String> orgLeves = wcIdentityResultOrgData.stream().map(WCOrgData::getOrgLeve)
-					.collect(Collectors.toSet());
-			log.error("orgLeves:{}", orgLeves);
-
-			for (String leve : orgLeves) {
-				List<WCOrgData> collect = wcIdentityResultOrgData.stream()
-						.filter(wcOrgData -> leve.equals(wcOrgData.getOrgLeve())).collect(Collectors.toList());
-
-				for (WCOrgData wcOrgData : collect) {
-					String bid = wcOrgData.get_BID();
-					String organizationId = wcOrgData.getOrganizationId();
-					String parentId = wcOrgData.getParentId();
-					String code = wcOrgData.getCode();
-					String name = wcOrgData.getName();
-					String orgLeve = wcOrgData.getOrgLeve();
-					boolean disabled = wcOrgData.isDisabled();
-					log.debug("{}:{}:{}:{}:{}:{}:{}", bid, organizationId, parentId, code, convertToChinese(name),
-							orgLeve, disabled);
-
-					if (parentId != null) {
-						WCOrgData wcOrgData2 = wcIdentityResultOrgData.stream()
-								.filter(wcOrgData1 -> parentId.equals(wcOrgData1.getOrganizationId())).findFirst()
-								.orElse(null);
-						if (wcOrgData2 != null) {
-							String bid1 = wcOrgData2.get_BID();
-							log.error("{}", bid1);
-						}
-					}
-				}
-			}
+			log.error("json:{}", json);
 
 			lines = FileUtils.readLines(file, "UTF-8");
 			log.debug("{}", lines);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return ResponseEntity.ok(wcIdentityResultOrgData);
+		return ResponseEntity.ok(lines);
 	}
 
 	public static final byte[] SRC_DATA_16B = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
-
-	@Operation(summary = "测试SM4")
-	@GetMapping("/testSM4")
-	public ResponseEntity<Void> testSM4() {
-		SM4CipherPool sm4CipherPool = new SM4CipherPool(4);
-		SM4Cipher sm4Cipher = null;
-		try {
-			sm4Cipher = sm4CipherPool.borrowObject();
-			Cipher cipher = sm4Cipher.getCipher(SM4Mode.SM4_CBC_PKCS7Padding);
-
-			byte[] key = "1234567890abcdef".getBytes();
-			SecretKeySpec sm4Key = new SecretKeySpec(key, SM4Mode.SM4_CBC_PKCS7Padding.getName());
-			byte[] iv = "ilovegolangjava.".getBytes();
-			SM4Util instance = new SM4Util();
-			// 解密校验
-			String cryptText = "6c24d235d11a8c1428546ab114500225"; // 2d529a9f0042384350311823e3bc11fde5cf93a25b035cda82baf56ccf1f306c
-			// 8781d981f7ffd6c1a780f8b213f596aa535c8bb6389923f8329f79a1707966e2
-			// 6c24d235d11a8c1428546ab114500225
-
-			log.debug("1:{}", Hex.decode(cryptText));
-			log.debug("2:{}", ByteUtils.fromHexString(cryptText));
-			byte[] b = instance.decrypt(cipher, Hex.decode(cryptText), sm4Key, iv);
-			log.debug("I am encrypted by golang SM4.{}", new String(b));
-
-			// 加密校验，SM4加密以下明文以供Go SM4进行解密验证
-			byte[] msg = "你好!".getBytes();
-			byte[] cryptData = instance.encrypt(cipher, msg, sm4Key, iv);
-			String cryptStr = Hex.toHexString(cryptData);
-
-			log.debug(cryptStr);
-
-			log.debug("hex:{}", Hex.toHexString(cryptData));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ResponseEntity.ok().build();
-	}
 
 	@Operation(summary = "测试pdfBox")
 	@GetMapping(value = "/testPdfBox")

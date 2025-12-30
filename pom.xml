@@ -16,7 +16,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.compilerVersion>17</maven.compiler.compilerVersion>
         <spring-boot3.version>3.5.0</spring-boot3.version>
-        <apache.shiro.version>2.0.4</apache.shiro.version>
+        <apache.shiro.version>2.0.6</apache.shiro.version>
         <apache.commons-io.version>2.17.0</apache.commons-io.version>
         <vfs2.version>2.10.0</vfs2.version>
         <poi.version>5.4.0</poi.version>
@@ -88,6 +88,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-integration</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.integration</groupId>-->
+<!--            <artifactId>spring-integration-stream</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
 
         <dependency>
